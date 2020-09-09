@@ -21,6 +21,8 @@
         android:layout_marginTop="10dp"
         android:layout_gravity="center"
         android:background="@drawable/bordas"
+        android:drawableRight="@drawable/ic_baseline_email_24"
+        android:paddingRight="15dp"
         />
 
     <EditText
@@ -30,6 +32,8 @@
         android:layout_marginTop="20dp"
         android:layout_gravity="center"
         android:background="@drawable/bordas"
+        android:drawableRight="@drawable/ic_baseline_lock_24"
+        android:paddingRight="15dp"
         />
 
     <Button
@@ -51,7 +55,7 @@
     <TextView
         android:layout_marginTop="50dp"
         android:layout_width="400dp"
-        android:layout_height="100sp"
+        android:layout_height="60dp"
         android:text="@string/ainda_n_o_possui_uma_conta_n_crie_uma_agora_mesmo"
         android:textSize="20sp"
         android:textAlignment="center"
@@ -64,6 +68,7 @@
         android:layout_gravity="center"
         android:background="@drawable/arredondado"
         android:backgroundTint="#CCCCCC"
+        android:layout_marginTop="30dp"
         />
 
 

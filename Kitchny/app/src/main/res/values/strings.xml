@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Kitchny</string>
+    <string name="ainda_n_o_possui_uma_conta_n_crie_uma_agora_mesmo">Ainda não possui uma conta? \n Crie uma agora mesmo!</string>
+    <string name="criar_conta">Criar Conta</string>
 </resources>
