@@ -1,5 +1,9 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">Kitchny</string>
     <string name="ainda_n_o_possui_uma_conta_n_crie_uma_agora_mesmo">Ainda não possui uma conta? \n Crie uma agora mesmo!</string>
-    <string name="criar_conta">Criar Conta</string>
+    <string name="criar_conta" tools:ignore="DuplicateDefinition">Criar Conta</string>
+    <string name="digite_seu_email">Digite seu email</string>
+    <string name="confirme_sua_senha">Confirme sua senha</string>
+    <string name="digite_sua_senha">Digite sua senha</string>
+    <string name="digite_seu_nome">Digite seu nome</string>
 </resources>

@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        tools:context=".MainActivity"
+        android:paddingBottom="40dp">
+
+        <ImageView
+            android:layout_width="300dp"
+            android:layout_height="200dp"
+            android:background="@drawable/logo"
+            android:layout_gravity="center"
+            />
+
+        <TextView
+            android:layout_width="300dp"
+            android:layout_height="30dp"
+            android:textSize="20sp"
+            android:text="@string/digite_seu_nome"
+            android:layout_marginStart="65dp"
+            />
+
+        <EditText
+            android:id="@+id/etNome"
+            android:layout_width="300dp"
+            android:layout_height="40dp"
+            android:textSize="25sp"
+            android:layout_marginTop="10dp"
+            android:layout_gravity="center"
+            android:background="@drawable/bordas"
+            android:drawableEnd="@drawable/ic_baseline_account_circle_24"
+            android:paddingEnd="15dp"
+            android:paddingStart="15dp"
+            android:layout_marginBottom="20dp"
+            />
+
+        <TextView
+            android:layout_width="300dp"
+            android:layout_height="30dp"
+            android:textSize="20sp"
+            android:text="@string/digite_seu_email"
+            android:layout_marginStart="65dp"
+            />
+
+        <EditText
+            android:id="@+id/etEmail"
+            android:layout_width="300dp"
+            android:layout_height="40dp"
+            android:textSize="25sp"
+            android:layout_marginTop="10dp"
+            android:layout_gravity="center"
+            android:background="@drawable/bordas"
+            android:drawableEnd="@drawable/ic_baseline_email_24"
+            android:paddingEnd="15dp"
+            android:paddingStart="15dp"
+            android:layout_marginBottom="20dp"
+            />
+
+        <TextView
+            android:layout_width="300dp"
+            android:layout_height="30dp"
+            android:textSize="20sp"
+            android:text="@string/digite_sua_senha"
+            android:layout_marginStart="65dp"
+            />
+
+        <EditText
+            android:id="@+id/etSenha"
+            android:layout_width="300dp"
+            android:layout_height="40dp"
+            android:textSize="25sp"
+            android:layout_marginTop="10dp"
+            android:layout_gravity="center"
+            android:background="@drawable/bordas"
+            android:drawableEnd="@drawable/ic_baseline_visibility_24"
+            android:paddingRight="15dp"
+            android:paddingLeft="15dp"
+            android:layout_marginBottom="20dp"
+            />
+
+        <TextView
+            android:layout_width="300dp"
+            android:layout_height="30dp"
+            android:textSize="20sp"
+            android:text="@string/confirme_sua_senha"
+            android:layout_marginStart="65dp"
+            />
+
+        <EditText
+            android:id="@+id/etConfirmarSenha"
+            android:layout_width="300dp"
+            android:layout_height="40dp"
+            android:textSize="25sp"
+            android:layout_marginTop="10dp"
+            android:layout_gravity="center"
+            android:background="@drawable/bordas"
+            android:drawableEnd="@drawable/ic_baseline_visibility_24"
+            android:paddingRight="15dp"
+            android:paddingLeft="15dp"
+            android:layout_marginBottom="20dp"
+            />
+
+        <Button
+            android:id="@+id/btnCriarConta"
+            android:layout_width="200dp"
+            android:layout_height="50dp"
+            android:text="@string/criar_conta"
+            android:layout_marginTop="30dp"
+            android:layout_gravity="center"
+            android:background="@drawable/arredondado"
+            android:backgroundTint="#CCCCCC"
+            />
+
+    </LinearLayout>
+</ScrollView>
