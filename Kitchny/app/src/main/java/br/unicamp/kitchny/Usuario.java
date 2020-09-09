@@ -14,6 +14,12 @@ public class Usuario implements Serializable {
         setSenha(senha);
     }
 
+    public Usuario (String email, String senha)
+    {
+        setEmail(email);
+        setSenha(senha);
+    }
+
     public void setEmail(String email) {
         this.email = email;
     }

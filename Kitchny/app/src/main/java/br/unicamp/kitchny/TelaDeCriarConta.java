@@ -38,9 +38,14 @@ public class TelaDeCriarConta extends AppCompatActivity {
             @SuppressLint("ShowToast")
             @Override
             public void onClick(View view) {
-                usuario = new Usuario(etEmail.getText().toString(), etNome.getText().toString(), etSenha.getText().toString());
-                MyTask task = new MyTask();
-                task.execute("http://192.168.0.28:3000/api/insertUsuario");
+                if (etSenha.getText().toString().equals(etConfirmarSenha.getText().toString()))
+                {
+                    usuario = new Usuario(etEmail.getText().toString(), etNome.getText().toString(), etSenha.getText().toString());
+                    MyTask task = new MyTask();
+                    task.execute("http://192.168.0.28:3000/api/insertUsuario");
+                }
+                else
+                    Toast.makeText(TelaDeCriarConta.this, "Senhas não são iguais", Toast.LENGTH_LONG).show();
             }
         });
     }
@@ -64,7 +69,7 @@ public class TelaDeCriarConta extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(String s) {
-
+            finish();
         }
     }
 }

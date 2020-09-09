@@ -84,6 +84,7 @@
             android:paddingRight="15dp"
             android:paddingLeft="15dp"
             android:layout_marginBottom="20dp"
+            android:inputType="textPassword"
             />
 
         <TextView
@@ -106,6 +107,7 @@
             android:paddingRight="15dp"
             android:paddingLeft="15dp"
             android:layout_marginBottom="20dp"
+            android:inputType="textPassword"
             />
 
         <Button
