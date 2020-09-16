@@ -11,6 +11,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Toast;
+import br.unicamp.kitchny.kotlin.*;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -35,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
         btnEntrar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                usuario = new Usuario (etEmail.getText().toString(), etSenha.getText().toString());
+                usuario = new br.unicamp.kitchny.kotlin.Usuario(etEmail.getText().toString(), etSenha.getText().toString());
                 MyTask task = new MyTask();
                 task.execute("http://192.168.0.28:3000/api/autenticateUsuario");
             }
