@@ -67,6 +67,34 @@ router.get("/api/receita/:id?", async (req, res) => {
   }
 });
 
+router.post("/api/receitasFromIngredientes", async (req, res) => {
+  try {
+    let ingredientes = req.body.ingredientes;
+    let receitas = [];
+    for (let i = 0; i < ingredientes.length; i++) {
+      let idReceita = await receitaFromIngrediente(ingredientes[i]);
+      receitas.push(idReceita);
+    }
+
+    let obj = { receitas };
+    return res.json(obj);
+  } catch (error) {
+    console.log(error);
+    res.json(404);
+  }
+});
+
+async function receitaFromIngrediente(ingrediente) {
+  let query =
+    "SELECT RECEITA FROM KITCHNY.DBO.INGREDIENTES WHERE NOME = " +
+    "'" +
+    ingrediente +
+    "'";
+  const response = await execSQL(query);
+  const objId = response.recordset[0];
+  return objId.RECEITA;
+}
+
 // Retorna todos os ingredientes de uma receita
 router.get("/api/ingredientesReceita/:id?", async (req, res) => {
   try {
@@ -222,16 +250,12 @@ router.get("/api/ingrediente/:id?", async (req, res) => {
 // Registra os ingredientes do JSON no BD (não funciona corretamente)
 router.post("/api/insertIngredientes", async (req, res) => {
   try {
-    var receita = receitas[0];
-    let ingredientes = await obterIngrediente(receita);
-    console.log(ingredientes);
-    //await registrarIngredientes(ingredientes);
-    /*for (let i = 0; i < receitas.length; i++) {
+    for (let i = 0; i < receitas.length; i++) {
       //console.log(receita);
-      var ingredientes = await obterIngrediente(receita);
+      var ingredientes = await obterIngrediente(receitas[i]);
       console.log(ingredientes);
       await registrarIngredientes(ingredientes);
-    }*/
+    }
 
     return res.json(200);
   } catch (error) {
@@ -267,13 +291,13 @@ async function registrarIngredientes(ingredientes) {
 // Retorna um conjunto de ingredientes de uma receita (não funciona corretamente)
 async function obterIngrediente(receita) {
   try {
-    var ingredientes = [];
-    var obj = {
-      idReceita: 0,
-      ingrediente: "",
-      quantidade: "",
-    };
+    let ingredientes = [];
     for (let i = 0; i < receita.secao[0].conteudo.length; i++) {
+      var obj = {
+        idReceita: 0,
+        ingrediente: "",
+        quantidade: "",
+      };
       var aux = await execSQL(
         "SELECT ID FROM KITCHNY.DBO.RECEITAS WHERE NOME = " +
           "'" +
@@ -281,7 +305,6 @@ async function obterIngrediente(receita) {
           "'"
       );
       obj.idReceita = aux.recordset[0].ID;
-      //obj.ingrediente = receita.secao[0].conteudo[i];
       var linha = receita.secao[0].conteudo[i];
       if (linha.indexOf("g")) {
         linha = receita.secao[0].conteudo[i].split("de");
@@ -303,6 +326,7 @@ async function obterIngrediente(receita) {
           obj.quantidade = "";
         }
       }
+
       ingredientes.push(obj);
     }
 
@@ -391,19 +415,24 @@ router.post("/api/autenticateUsuario", async (req, res) => {
 router.get("/api/listaDeCompras/:id?", async (req, res) => {
   try {
     let email = req.params.id;
-    let queryInicial =
-      "SELECT ID FROM KITCHNY.DBO.USUARIOS WHERE EMAIL = " + "'" + email + "'";
-    const responseInicial = await execSQL(queryInicial);
-    let obj = responseInicial.recordset[0];
-    let queryFinal =
-      "SELECT * FROM KITCHNY.DBO.LISTADECOMPRAS WHERE IDUSUARIO = " + obj.ID;
-    const responseFinal = await execSQL(queryFinal);
+    const objId = getIdUsuario(email);
+    let query =
+      "SELECT * FROM KITCHNY.DBO.LISTADECOMPRAS WHERE IDUSUARIO = " + objId.ID;
+    const responseFinal = await execSQL(query);
     return res.json(responseFinal.recordset);
   } catch (error) {
     console.log(error);
     return res.json(404);
   }
 });
+
+async function getIdUsuario(email) {
+  let query =
+    "SELECT ID FROM KITCHNY.DBO.USUARIOS WHERE EMAIL = " + "'" + email + "'";
+  const responseInicial = await execSQL(query);
+  let objId = responseInicial.recordset[0];
+  return objId;
+}
 
 // Insere uma lista de compras
 router.post("/api/insertListaDeCompras", async (req, res) => {
