@@ -5,7 +5,7 @@ const app = express();
 const bodyParser = require("body-parser");
 const port = 3000;
 const connStr =
-  "Server=regulus.cotuca.unicamp.br;Database=BD19171;User Id=BD19171;Password=;";
+  "Server=regulus.cotuca.unicamp.br;Database=BD19171;User Id=BD19171;Password=COTUCA78911INFO;";
 const sql = require("mssql");
 
 const fs = require("fs");
@@ -67,13 +67,15 @@ router.get("/api/receita/:id?", async (req, res) => {
   }
 });
 
+// Retorna receitas associadas aos ingredientes
 router.post("/api/receitasFromIngredientes", async (req, res) => {
   try {
     let ingredientes = req.body.ingredientes;
     let receitas = [];
     for (let i = 0; i < ingredientes.length; i++) {
-      let idReceita = await receitaFromIngrediente(ingredientes[i]);
-      receitas.push(idReceita);
+      let idReceita = await idReceitaFromIngrediente(ingredientes[i]);
+      let nomeReceita = await nomeReceitaFromIngrediente(idReceita);
+      receitas.push(nomeReceita);
     }
 
     let obj = { receitas };
@@ -84,15 +86,23 @@ router.post("/api/receitasFromIngredientes", async (req, res) => {
   }
 });
 
-async function receitaFromIngrediente(ingrediente) {
+async function nomeReceitaFromIngrediente(idReceita) {
+  let query = "SELECT NOME FROM KITCHNY.DBO.RECEITAS WHERE ID = " + idReceita;
+  const response = await execSQL(query);
+  const obj = response.recordset[0];
+  return obj.NOME;
+}
+
+// Retorna o idDaReceita
+async function idReceitaFromIngrediente(ingrediente) {
   let query =
     "SELECT RECEITA FROM KITCHNY.DBO.INGREDIENTES WHERE NOME = " +
     "'" +
     ingrediente +
     "'";
   const response = await execSQL(query);
-  const objId = response.recordset[0];
-  return objId.RECEITA;
+  const obj = response.recordset[0];
+  return obj.RECEITA;
 }
 
 // Retorna todos os ingredientes de uma receita
@@ -382,6 +392,32 @@ router.post("/api/insertUsuario", async (req, res) => {
       usuario.senha +
       "'" +
       ");";
+    await execSQL(query);
+    return res.json(200);
+  } catch (error) {
+    console.log(error);
+    return res.json(404);
+  }
+});
+
+// Altera o campo nome e senha do usuario
+router.put("/api/updateUsuario", async (req, res) => {
+  try {
+    let email = req.body.email;
+    let nome = req.body.nome;
+    let senha = req.body.senha;
+    let query =
+      "UPDATE KITCHNY.DBO.USUARIOS \n SET NOME = " +
+      "'" +
+      nome +
+      "', " +
+      "SENHA = " +
+      "'" +
+      senha +
+      "' WHERE EMAIL = " +
+      "'" +
+      email +
+      "';";
     await execSQL(query);
     return res.json(200);
   } catch (error) {
