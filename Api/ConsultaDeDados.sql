@@ -37,3 +37,10 @@ drop table Kitchny.dbo.Receitas
 
 select * from Kitchny.dbo.Receitas
 
+
+
+
+select * from Kitchny.dbo.Usuarios
+
+alter table Kitchny.dbo.Usuarios
+add qtdReceitasAprovadas int
