@@ -5,7 +5,7 @@ const app = express();
 const bodyParser = require("body-parser");
 const port = 3000;
 const connStr =
-  "Server=regulus.cotuca.unicamp.br;Database=BD19171;User Id=BD19171;Password=;";
+  "Server=regulus.cotuca.unicamp.br;Database=BD19171;User Id=BD19171;Password=COTUCA78911INFO;";
 const sql = require("mssql");
 
 const fs = require("fs");
