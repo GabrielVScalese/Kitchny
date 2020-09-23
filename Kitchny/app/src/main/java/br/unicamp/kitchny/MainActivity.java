@@ -41,8 +41,7 @@ public class MainActivity extends AppCompatActivity {
                 task.execute("http://192.168.0.28:3000/api/autenticateUsuario");
             }
         });
-
-
+        
         btnCriarConta.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -50,8 +49,6 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-
-
     }
 
     private class MyTask extends AsyncTask<String, String, String> {
