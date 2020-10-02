@@ -9,10 +9,7 @@ const connStr =
 const sql = require("mssql");
 
 const fs = require("fs");
-const { execFile, exec } = require("child_process");
-const { RSA_NO_PADDING } = require("constants");
-var result = fs.readFileSync("receitas.json");
-var receitas = JSON.parse(result);
+var receitas = JSON.parse(fs.readFileSync("receitas.json"));
 
 sql
   .connect(connStr)
@@ -21,10 +18,11 @@ sql
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-const router = express.Router();
 
 app.listen(port);
 console.log("API funcionando!");
+
+const router = express.Router();
 
 // Executa alguma query
 async function execSQL(sqlQry) {
@@ -39,39 +37,56 @@ async function execSQL(sqlQry) {
 router.get("/", (req, res) => {
   res.json({ mensagem: "API funcionando" });
 });
-app.use("/", router);
 
 /////////////////////////////////////////////////////////////////////////////// Receitas
 
 // Retorna todas as receitas
 router.get("/api/receitas", async (req, res) => {
-  let query = "SELECT * FROM KITCHNY.DBO.RECEITAS";
-  let response = await execSQL(query);
-  return res.json(response.recordset);
+  try {
+    let response = await execSQL("SELECT * FROM KITCHNY.DBO.RECEITAS");
+
+    return res.json(response.recordset);
+  } catch (error) {
+    return res.status(500).send({ error: "Erro na busca de receitas!" });
+  }
 });
 
 // Retorna uma receita com um determinado nome
 router.get("/api/receita/:id?", async (req, res) => {
   try {
     let nomeReceita = req.params.id;
-    let query =
-      "SELECT * FROM KITCHNY.DBO.RECEITAS WHERE NOME = " +
-      "'" +
-      nomeReceita +
-      "'";
-    const response = await execSQL(query);
-    return res.json(response.recordset[0]);
+
+    const receita = await getReceita(nomeReceita);
+    
+    return res.json(receita);
   } catch (error) {
-    console.log(error);
-    res.json(404);
+    return res.status(500).send({ error: "Erro na busca de uma receita!" });
   }
 });
 
+async function getReceita (receita)
+{
+  const response = await execSQL(
+    "SELECT * FROM KITCHNY.DBO.RECEITAS WHERE NOME = " +
+      "'" +
+      receita +
+      "'"
+  );
+  
+  if (response.rowsAffected == 0)
+  {
+    return undefined;
+  }
+  else
+     return response.recordset[0];
+}
+
 // Retorna receitas associadas aos ingredientes
-router.post("/api/receitasFromIngredientes", async (req, res) => {
+router.get("/api/receitasFromIngredientes", async (req, res) => {
   try {
     let ingredientes = req.body.ingredientes;
     let receitas = [];
+
     for (let i = 0; i < ingredientes.length; i++) {
       let idReceita = await idReceitaFromIngrediente(ingredientes[i]);
       let nomeReceita = await nomeReceitaFromIngrediente(idReceita);
@@ -79,30 +94,31 @@ router.post("/api/receitasFromIngredientes", async (req, res) => {
     }
 
     let obj = { receitas };
+
     return res.json(obj);
   } catch (error) {
-    console.log(error);
-    res.json(404);
+    return res.status(500).send({ error: "Erro na busca de receitas!" });
   }
 });
 
 async function nomeReceitaFromIngrediente(idReceita) {
-  let query = "SELECT NOME FROM KITCHNY.DBO.RECEITAS WHERE ID = " + idReceita;
-  const response = await execSQL(query);
-  const obj = response.recordset[0];
-  return obj.NOME;
+  const response = await execSQL(
+    "SELECT NOME FROM KITCHNY.DBO.RECEITAS WHERE ID = " + idReceita
+  );
+
+  return response.recordset[0];
 }
 
 // Retorna o idDaReceita
 async function idReceitaFromIngrediente(ingrediente) {
-  let query =
+  const response = await execSQL(
     "SELECT RECEITA FROM KITCHNY.DBO.INGREDIENTES WHERE NOME = " +
-    "'" +
-    ingrediente +
-    "'";
-  const response = await execSQL(query);
-  const obj = response.recordset[0];
-  return obj.RECEITA;
+      "'" +
+      ingrediente +
+      "'"
+  );
+
+  return response.recordset[0].RECEITA;
 }
 
 // Retorna todos os ingredientes de uma receita
@@ -110,27 +126,24 @@ router.get("/api/ingredientesReceita/:id?", async (req, res) => {
   try {
     let nomeReceita = req.params.id;
     const id = await getIdReceita(nomeReceita);
-    let query = "SELECT * FROM KITCHNY.DBO.INGREDIENTES WHERE RECEITA = " + id;
-    const response = await execSQL(query);
+    const response = await execSQL(
+      "SELECT * FROM KITCHNY.DBO.INGREDIENTES WHERE RECEITA = " + id
+    );
+
     return res.json(response.recordset);
   } catch (error) {
-    console.log(error);
-    return res.json(404);
+    return res
+      .status(500)
+      .send({ error: "Erro na busca de ingredienes de uma receita" });
   }
 });
 
 async function getIdReceita(nomeReceita) {
-  try {
-    let query =
-      "SELECT * FROM KITCHNY.DBO.RECEITAS WHERE NOME = " +
-      "'" +
-      nomeReceita +
-      "'";
-    const response = await execSQL(query);
-    return response.recordset[0].id;
-  } catch (error) {
-    console.log(error);
-  }
+  const response = await execSQL(
+    "SELECT * FROM KITCHNY.DBO.RECEITAS WHERE NOME = " + "'" + nomeReceita + "'"
+  );
+
+  return response.recordset[0].id;
 }
 
 // Insere uma receita
@@ -139,49 +152,12 @@ router.post("/api/insertReceita", async (req, res) => {
     let nome = req.body.nome;
     let rendimento = req.body.rendimento;
     let modoDePreparo = req.body.modoDePreparo;
-    let avaliacao = 6;
+    let avaliacao = null;
 
-    let query =
+    await execSQL(
       "INSERT INTO KITCHNY.DBO.RECEITAS VALUES (" +
-      "'" +
-      nome +
-      "'" +
-      "," +
-      "'" +
-      rendimento +
-      "'" +
-      "," +
-      "'" +
-      modoDePreparo +
-      "'" +
-      "," +
-      avaliacao +
-      ")";
-
-    await execSQL(query);
-    return res.json(200);
-  } catch (error) {
-    console.log(error);
-    res.json(404);
-  }
-});
-
-// Registra 1300 receitas no BD
-router.post("/api/insertReceitas", async function (req, res) {
-  try {
-    for (let i = 0; i < receitas.length; i++) {
-      let receita = receitas[i];
-      console.log(receita);
-      let nomeReceita = receita.nome;
-      let rendimento = "";
-      if (receita.secao[1] != undefined)
-        var modoDePreparo = obterModoDePreparo(receita);
-      else continue;
-      let avaliacao = 6;
-      let query =
-        "INSERT INTO KITCHNY.DBO.RECEITAS (NOME, RENDIMENTO, MODODEPREPARO, AVALIACAO) VALUES (" +
         "'" +
-        nomeReceita +
+        nome +
         "'" +
         "," +
         "'" +
@@ -192,18 +168,50 @@ router.post("/api/insertReceitas", async function (req, res) {
         modoDePreparo +
         "'" +
         "," +
-        "'" +
         avaliacao +
-        "'" +
-        ")";
+        ")"
+    );
 
-      await execSQL(query);
+    return res.status(200).send({ succesfull: "Receita incluída!" });
+  } catch (error) {
+    return res.status(500).send({ error: "Erro na inclusão de receita" });
+  }
+});
+
+// Registra 1300 receitas no BD
+router.post("/api/insertReceitas", async function (req, res) {
+  try {
+    for (let i = 0; i < receitas.length; i++) {
+      let nomeReceita = receita[i];
+      let rendimento = "";
+      if (receita[i].secao[1] != undefined)
+        var modoDePreparo = obterModoDePreparo(receita[i]);
+      else continue;
+      let avaliacao = null;
+      await execSQL(
+        "INSERT INTO KITCHNY.DBO.RECEITAS (NOME, RENDIMENTO, MODODEPREPARO, AVALIACAO) VALUES (" +
+          "'" +
+          nomeReceita +
+          "'" +
+          "," +
+          "'" +
+          rendimento +
+          "'" +
+          "," +
+          "'" +
+          modoDePreparo +
+          "'" +
+          "," +
+          "'" +
+          avaliacao +
+          "'" +
+          ")"
+      );
     }
 
-    return res.json(200);
+    return res.status(200).send({ succesfull: "Receitas incluídas!" });
   } catch (error) {
-    console.log(error);
-    res.json(404);
+    return res.status(500).send({ error: "Erro na inclusão de receitas" });
   }
 });
 
@@ -217,15 +225,32 @@ function obterModoDePreparo(receita) {
 }
 
 // Exclui uma receita
-router.delete("api/deleteReceita/:id?", async (req, res) => {
+router.delete("/api/deleteReceita/:id?", async (req, res) => {
   try {
     let nomeReceita = req.params.id;
-    let query = "DELETE FROM KITCHNY.DBO.RECEITAS WHERE NOME = " + nomeReceita;
-    await execSQL(query);
-    return res.json(200);
+
+    if (await getReceita(nomeReceita) == undefined)
+        return res.status(404).send({error: "Receita inexistente!"});
+
+    console.log("a");
+    await execSQL(
+      "DELETE FROM KITCHNY.DBO.RECEITAS WHERE NOME = " + "'" + nomeReceita + "'"
+    );
+
+    return res.status(200).send({ succesfull: "Receita excluída!" });
   } catch (error) {
-    console.log(error);
-    res.json(404);
+    return res.status(500).send({ error: "Erro na exclusão de receita" });
+  }
+});
+
+// Exclui todas as receitas
+router.delete("/api/deleteReceitas", async (req, res) => {
+  try {
+    await execSQL("DELETE FROM KITCHNY.DBO.RECEITAS");
+
+    return res.status(200).send({ succesfull: "Receitas excluída!" });
+  } catch (error) {
+    return res.status(500).send({ error: "Erro na exclusão de receitas" });
   }
 });
 
@@ -234,12 +259,11 @@ router.delete("api/deleteReceita/:id?", async (req, res) => {
 // Retorna todos os ingredientes
 router.get("/api/ingredientes", async (req, res) => {
   try {
-    let query = "SELECT * FROM KITCHNY.DBO.INGREDIENTES";
-    const response = await execSQL(query);
+    const response = await execSQL("SELECT * FROM KITCHNY.DBO.INGREDIENTES");
+
     return res.json(response.recordset);
   } catch (error) {
-    console.log(error);
-    res.json(404);
+    return res.status(500).send({ error: "Erro na busca de ingredientes!" });
   }
 });
 
@@ -247,13 +271,13 @@ router.get("/api/ingredientes", async (req, res) => {
 router.get("/api/ingrediente/:id?", async (req, res) => {
   try {
     let nome = req.params.id;
-    let query =
-      "SELECT * FROM KITCHNY.DBO.INGREDIENTES WHERE NOME = " + "'" + nome + "'";
-    const response = await execSQL(query);
+    const response = await execSQL(
+      "SELECT * FROM KITCHNY.DBO.INGREDIENTES WHERE NOME = " + "'" + nome + "'"
+    );
+
     return res.json(response.recordset[0]);
   } catch (error) {
-    console.log(error);
-    res.json(404);
+    return res.status(500).send({ error: "Erro na busca de ingrediente!" });
   }
 });
 
@@ -261,26 +285,21 @@ router.get("/api/ingrediente/:id?", async (req, res) => {
 router.post("/api/insertIngredientes", async (req, res) => {
   try {
     for (let i = 0; i < receitas.length; i++) {
-      //console.log(receita);
       var ingredientes = await obterIngrediente(receitas[i]);
-      console.log(ingredientes);
       await registrarIngredientes(ingredientes);
     }
 
-    return res.json(200);
+    return res.status(200).send({ succesfull: "Ingredientes incluídos!" });
   } catch (error) {
-    //console.log(error);
-    res.json(404);
+    return res.status(500).send({ error: "Erro na inclusão de ingredientes" });
   }
 });
 
 // Registra um grupo de ingredientes (não funciona corretamente)
 async function registrarIngredientes(ingredientes) {
-  try {
-    for (let i = 0; i < ingredientes.length; i++) {
-      var obj = ingredientes[i];
-      let query =
-        "INSERT INTO KITCHNY.DBO.INGREDIENTES VALUES (" +
+  for (let i = 0; i < ingredientes.length; i++) {
+    await execSQL(
+      "INSERT INTO KITCHNY.DBO.INGREDIENTES VALUES (" +
         "'" +
         ingredientes[i].ingrediente +
         "'" +
@@ -290,60 +309,56 @@ async function registrarIngredientes(ingredientes) {
         "'" +
         ingredientes[i].quantidade +
         "'" +
-        ")";
-      await execSQL(query);
-    }
-  } catch (error) {
-    //console.log(error);
+        ")"
+    );
   }
 }
 
 // Retorna um conjunto de ingredientes de uma receita (não funciona corretamente)
 async function obterIngrediente(receita) {
-  try {
-    let ingredientes = [];
-    for (let i = 0; i < receita.secao[0].conteudo.length; i++) {
-      var obj = {
-        idReceita: 0,
-        ingrediente: "",
-        quantidade: "",
-      };
-      var aux = await execSQL(
-        "SELECT ID FROM KITCHNY.DBO.RECEITAS WHERE NOME = " +
-          "'" +
-          receita.nome +
-          "'"
-      );
-      obj.idReceita = aux.recordset[0].ID;
-      var linha = receita.secao[0].conteudo[i];
-      if (linha.indexOf("g")) {
-        linha = receita.secao[0].conteudo[i].split("de");
-        obj.quantidade = linha[0];
-        obj.ingrediente = linha[1];
-      } else if (linha.indexOf("ml")) {
-        linha = receita.secao[0].conteudo[i].split("de");
-        obj.quantidade = linha[0];
-        obj.ingrediente = linha[1];
-      } else {
-        if (linha.match(/(\d+)/)) {
-          linha = receita.secao[0].conteudo[i];
-          let matches = linha.match(/(\d+)/);
-          let cadeia = receita.secao[0].conteudo[i].split(matches[0]);
-          obj.quantidade = matches;
-          obj.ingrediente = linha[0];
-        } else {
-          obj.ingrediente = linha;
-          obj.quantidade = "";
-        }
-      }
+  let ingredientes = [];
+  for (let i = 0; i < receita.secao[0].conteudo.length; i++) {
+    var obj = {
+      idReceita: 0,
+      ingrediente: "",
+      quantidade: "",
+    };
 
-      ingredientes.push(obj);
+    var aux = await execSQL(
+      "SELECT ID FROM KITCHNY.DBO.RECEITAS WHERE NOME = " +
+        "'" +
+        receita.nome +
+        "'"
+    );
+
+    obj.idReceita = aux.recordset[0].ID;
+    var linha = receita.secao[0].conteudo[i];
+
+    if (linha.indexOf("g")) {
+      linha = receita.secao[0].conteudo[i].split("de");
+      obj.quantidade = linha[0];
+      obj.ingrediente = linha[1];
+    } else if (linha.indexOf("ml")) {
+      linha = receita.secao[0].conteudo[i].split("de");
+      obj.quantidade = linha[0];
+      obj.ingrediente = linha[1];
+    } else {
+      if (linha.match(/(\d+)/)) {
+        linha = receita.secao[0].conteudo[i];
+        let matches = linha.match(/(\d+)/);
+        let cadeia = receita.secao[0].conteudo[i].split(matches[0]);
+        obj.quantidade = matches;
+        obj.ingrediente = linha[0];
+      } else {
+        obj.ingrediente = linha;
+        obj.quantidade = "";
+      }
     }
 
-    return ingredientes;
-  } catch (error) {
-    //console.log(error);
+    ingredientes.push(obj);
   }
+
+  return ingredientes;
 }
 
 /////////////////////////////////////////////////////////////////////////////// Usuários
@@ -351,12 +366,11 @@ async function obterIngrediente(receita) {
 // Retorna todos os usuários
 router.get("/api/usuarios", async (req, res) => {
   try {
-    let query = "SELECT * FROM KITCHNY.DBO.USUARIOS";
-    const response = await execSQL(query);
+    const response = await execSQL("SELECT * FROM KITCHNY.DBO.USUARIOS");
+
     return res.json(response.recordset);
   } catch (error) {
-    console.log(error);
-    return res.json(404);
+    return res.status(500).send({ error: "Erro na busca de alunos!" });
   }
 });
 
@@ -364,84 +378,108 @@ router.get("/api/usuarios", async (req, res) => {
 router.get("/api/usuario/:id?", async (req, res) => {
   try {
     let email = req.params.id;
-    let query =
-      "SELECT * FROM KITCHNY.DBO.USUARIOS WHERE EMAIL = " + "'" + email + "'";
-    const response = await execSQL(query);
+    const response = await execSQL(
+      "SELECT * FROM KITCHNY.DBO.USUARIOS WHERE EMAIL = " + "'" + email + "'"
+    );
+
     return res.json(response.recordset[0]);
   } catch (error) {
-    console.log(error);
-    return res.json(404);
+    return res.status(500).send({ error: "Erro na busca de usuário!" });
   }
 });
+
+
+async function getUsuario (email)
+{
+  const response = await execSQL(
+    "SELECT * FROM KITCHNY.DBO.USUARIOS WHERE EMAIL = " + "'" + email + "'"
+  );
+
+  if (response == undefined)
+      return undefined;
+  else
+      return response.recordset[0];
+}
 
 // Insere um usuário
 router.post("/api/insertUsuario", async (req, res) => {
   try {
     let usuario = req.body;
-    let query =
+
+    await execSQL(
       "INSERT INTO KITCHNY.DBO.USUARIOS VALUES (" +
-      "'" +
-      usuario.email +
-      "'" +
-      "," +
-      "'" +
-      usuario.nome +
-      "'" +
-      "," +
-      "'" +
-      usuario.senha +
-      "'" +
-      ");";
-    await execSQL(query);
-    return res.json(200);
+        "'" +
+        usuario.email +
+        "'" +
+        "," +
+        "'" +
+        usuario.nome +
+        "'" +
+        "," +
+        "'" +
+        usuario.senha +
+        "'" +
+        "," 
+        +
+        usuario.qtdReceitasAprovadas +
+        "," +
+        usuario.qtdReceitasReprovadas +
+        "," +
+        usuario.qtdReceitasPublicadas +
+        "," +
+        usuario.notaMediaReceitas +
+        ")"
+    );
+
+    return res.status(200).send({ succesfull: "Aluno incluído!" });
   } catch (error) {
-    console.log(error);
-    return res.json(404);
+    return res.status(500).send({ error: "Erro na inserção de usuário!" });
   }
 });
 
 // Altera o campo nome e senha do usuario
 router.put("/api/updateUsuario", async (req, res) => {
   try {
-    let email = req.body.email;
-    let nome = req.body.nome;
-    let senha = req.body.senha;
-    let query =
+    const usuario = req.body;
+    
+    if (getUsuario(usuario.email) == undefined)
+        return res.status(404).send({error: "Usuário inexistente"});
+
+    await execSQL(
       "UPDATE KITCHNY.DBO.USUARIOS \n SET NOME = " +
-      "'" +
-      nome +
-      "', " +
-      "SENHA = " +
-      "'" +
-      senha +
-      "' WHERE EMAIL = " +
-      "'" +
-      email +
-      "';";
-    await execSQL(query);
-    return res.json(200);
+        "'" +
+        usuario.nome +
+        "', " +
+        "SENHA = " +
+        "'" +
+        usuario.senha +
+        "' WHERE EMAIL = " +
+        "'" +
+        usuario.email +
+        "';"
+    );
+
+    return res.status(200).send({ succesfull: "Usuário alterado!" });
   } catch (error) {
-    console.log(error);
-    return res.json(404);
+    return res.status(500).send({ error: "Erro na alteração de usuário" });
   }
 });
 
 // Autentica um usuário a partir da senha
 router.post("/api/autenticateUsuario", async (req, res) => {
   try {
-    let email = req.body.email;
-    let senha = req.body.senha;
-    let query =
+    const usuario = req.body;
+    const responseSenha = await execSQL(
       "SELECT SENHA FROM KITCHNY.DBO.USUARIOS WHERE EMAIL = " +
-      "'" +
-      email +
-      "'";
-    const responseSenha = await execSQL(query);
-    if (responseSenha.recordset[0].SENHA == senha) return res.json(true);
-    else return res.json(false);
+        "'" +
+        usuario.email +
+        "'"
+    );
+    if (responseSenha.recordset[0].SENHA == usuario.senha)
+      return res.status(200).send({ succesfull: "Senha correta!" });
+    else return res.status(404).send({ succesfull: "Senha incorreta!" });
   } catch (error) {
-    console.log(error);
-    return res.json(404);
+    return res.status(500).send({ error: "Erro na busca de usuário" });
   }
 });
 
@@ -451,45 +489,49 @@ router.post("/api/autenticateUsuario", async (req, res) => {
 router.get("/api/listaDeCompras/:id?", async (req, res) => {
   try {
     let email = req.params.id;
-    const objId = getIdUsuario(email);
-    let query =
-      "SELECT * FROM KITCHNY.DBO.LISTADECOMPRAS WHERE IDUSUARIO = " + objId.ID;
-    const responseFinal = await execSQL(query);
+    const id = await getIdUsuario(email);
+    const responseFinal = await execSQL(
+      "SELECT * FROM KITCHNY.DBO.LISTADECOMPRAS WHERE IDUSUARIO = " + id
+    );
+
     return res.json(responseFinal.recordset);
   } catch (error) {
-    console.log(error);
-    return res.json(404);
+    return res
+      .status(500)
+      .send({ error: "Erro na busca de lista de compras!" });
   }
 });
 
 async function getIdUsuario(email) {
-  let query =
-    "SELECT ID FROM KITCHNY.DBO.USUARIOS WHERE EMAIL = " + "'" + email + "'";
-  const responseInicial = await execSQL(query);
-  let objId = responseInicial.recordset[0];
-  return objId;
+  const responseInicial = await execSQL(
+    "SELECT ID FROM KITCHNY.DBO.USUARIOS WHERE EMAIL = " + "'" + email + "'"
+  );
+
+  return responseInicial.recordset[0].ID;
 }
 
 // Insere uma lista de compras
 router.post("/api/insertListaDeCompras", async (req, res) => {
   try {
-    let idUsuario = req.body.idUsuario;
-    let idIngrediente = req.body.idIngrediente;
-    let quantidade = req.body.quantidade;
-    let query =
+    const listaDeCompras = req.body;
+    await execSQL(
       "INSERT INTO KITCHNY.DBO.LISTADECOMPRAS VALUES (" +
-      idUsuario +
-      "," +
-      idIngrediente +
-      "," +
-      "'" +
-      quantidade +
-      "'" +
-      ")";
-    await execSQL(query);
-    return res.json(200);
+        listaDeCompras.idUsuario +
+        "," +
+        listaDeCompras.idIngrediente +
+        "," +
+        "'" +
+        listaDeCompras.quantidade +
+        "'" +
+        ")"
+    );
+
+    return res.status(200).send({ succesfull: "Lista de compras inserida!" });
   } catch (error) {
-    console.log(error);
-    return res.json(404);
+    return res
+      .status(500)
+      .send({ error: "Erro na inclusão de lista de compras!" });
   }
 });
+
+app.use(router);
