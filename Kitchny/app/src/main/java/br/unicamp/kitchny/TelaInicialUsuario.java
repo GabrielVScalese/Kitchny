@@ -27,20 +27,22 @@ public class TelaInicialUsuario extends AppCompatActivity {
     TextView tvReceitas;
     TextView tvMedia;
 
-    JacksonImmutable.Usuario usuario;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tela_inicial_usuario);
 
-        getSupportActionBar().hide();
-        /*tvNomeUsuario = findViewById(R.id);
+
+
+        tvNomeUsuario = findViewById(R.id.tvNomeUsuario);
         tvEmailUsuario = findViewById(R.id.tvEmailUsuario);
         tvAprovacao = findViewById(R.id.tvAprovacao);
         tvReprovacao = findViewById(R.id.tvReprovacao);
         tvMedia = findViewById(R.id.tvMedia);
-        tvReceitas = findViewById(R.id.tvReceitas);*/
+        tvReceitas = findViewById(R.id.tvReceitas);
+        GetUsuario("gabriel.scalese@hotmail.com");
     }
 
     private void GetUsuario (String email)
@@ -52,8 +54,14 @@ public class TelaInicialUsuario extends AppCompatActivity {
             public void onResponse(Response<Usuario> response, Retrofit retrofit) {
                 if (response.isSuccess())
                 {
-                    Intent intent = new Intent (TelaInicialUsuario.this, TelaInicial.class);
-                    startActivity(intent);
+                    System.out.println("a");
+                    Usuario usuario = response.body();
+                    tvNomeUsuario.setText(usuario.getNome());
+                    tvEmailUsuario.setText(usuario.getEmail());
+                    tvAprovacao.setText("Você aprovou " + usuario.getQtdReceitasAprovadas() + " receitas!");
+                    tvReprovacao.setText("Você reprovou " + usuario.getQtdReceitasReprovadas() + " receitas!");
+                    tvMedia.setText("Você publicou " + usuario.getNotaMediaReceitas() + " receitas!");
+                    tvReceitas.setText("A nota média de suas receitas é " + usuario.getQtdReceitasPublicadas());
                 }
                 else
                 {

@@ -2,7 +2,7 @@ package br.unicamp.kitchny.kotlin
 
 import kotlin.Exception
 
-class Usuario (email: String, nome: String, senha: String, qtdReceitasAprovadas: Int, qtdReceitasReprovadas: Int, notaMediaReceitas: Float) : Cloneable
+class Usuario (email: String, nome: String, senha: String, qtdReceitasAprovadas: Int, qtdReceitasReprovadas: Int, qtdReceitasPublicadas: Int, notaMediaReceitas: Float) : Cloneable
 {
     var email: String = ""
         set(value)
@@ -70,6 +70,15 @@ class Usuario (email: String, nome: String, senha: String, qtdReceitasAprovadas:
             field = value
         }
 
+    var qtdReceitasPublicadas: Int = 0
+        set(value)
+        {
+            if(value < 0)
+                throw Exception("Quantidade inválida")
+
+            field = value
+        }
+
 
     init
     {
@@ -79,11 +88,12 @@ class Usuario (email: String, nome: String, senha: String, qtdReceitasAprovadas:
         this.qtdReceitasAprovadas = qtdReceitasAprovadas
         this.qtdReceitasReprovadas = qtdReceitasReprovadas
         this.notaMediaReceitas = notaMediaReceitas
+        this.qtdReceitasPublicadas = qtdReceitasPublicadas
     }
 
-    constructor(email: String, senha: String) : this(email, "UsuarioProvisorio12345", senha, 0, 0, 0.0F)
-    constructor(usuario: Usuario) : this(usuario.email, usuario.nome, usuario.senha, usuario.qtdReceitasAprovadas, usuario.qtdReceitasReprovadas, usuario.notaMediaReceitas)
-    constructor(email: String, nome: String, senha: String) : this(email, nome, senha, 0, 0, 0.0F)
+    constructor(email: String, senha: String) : this(email, "UsuarioProvisorio12345", senha, 0, 0, 0, 0.0F)
+    constructor(usuario: Usuario) : this(usuario.email, usuario.nome, usuario.senha, usuario.qtdReceitasAprovadas, usuario.qtdReceitasReprovadas, usuario.qtdReceitasPublicadas, usuario.notaMediaReceitas)
+    constructor(email: String, nome: String, senha: String) : this(email, nome, senha, 0, 0, 0, 0.0F)
 
     override fun equals(other: Any?): Boolean
     {
