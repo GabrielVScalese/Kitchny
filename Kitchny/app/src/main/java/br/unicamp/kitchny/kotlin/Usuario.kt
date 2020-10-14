@@ -65,7 +65,7 @@ class Usuario (email: String, nome: String, senha: String, qtdReceitasAprovadas:
         set(value)
         {
             if(value < 0.0F)
-                throw Exception("Quantidade inválida")
+                throw Exception("Nota inválida")
 
             field = value
         }
@@ -99,7 +99,7 @@ class Usuario (email: String, nome: String, senha: String, qtdReceitasAprovadas:
     {
         val outro: Usuario = other as Usuario
 
-        return (this.nome == outro.nome && this.email == outro.email && this.senha == outro.senha && this.qtdReceitasAprovadas == outro.qtdReceitasAprovadas && this.qtdReceitasReprovadas == outro.qtdReceitasReprovadas && this.notaMediaReceitas == outro.notaMediaReceitas)
+        return (this.nome == outro.nome && this.email == outro.email && this.senha == outro.senha && this.qtdReceitasAprovadas == outro.qtdReceitasAprovadas && this.qtdReceitasReprovadas == outro.qtdReceitasReprovadas && this.notaMediaReceitas == outro.notaMediaReceitas && this.qtdReceitasPublicadas == outro.qtdReceitasPublicadas)
     }
 
     override fun hashCode(): Int
@@ -112,6 +112,7 @@ class Usuario (email: String, nome: String, senha: String, qtdReceitasAprovadas:
         ret = ret * 17 + this.qtdReceitasAprovadas.hashCode()
         ret = ret * 17 + this.qtdReceitasReprovadas.hashCode()
         ret = ret * 17 + this.notaMediaReceitas.hashCode()
+        ret = ret * 17 + this.qtdReceitasPublicadas.hashCode()
 
         if (ret < 0)
             ret = -ret
@@ -121,7 +122,7 @@ class Usuario (email: String, nome: String, senha: String, qtdReceitasAprovadas:
 
     override fun toString(): String
     {
-        return "Email: ${this.email} | Nome: ${this.nome} | Senha: ${this.senha} | Quantidade de Receitas Aprovadas: ${this.qtdReceitasAprovadas} | Quantidade de Receitas Reprovadas: ${this.qtdReceitasReprovadas} | Nota Média das Receitas: ${this.notaMediaReceitas}"
+        return "Email: ${this.email} | Nome: ${this.nome} | Senha: ${this.senha} | Quantidade de Receitas Aprovadas: ${this.qtdReceitasAprovadas} | Quantidade de Receitas Reprovadas: ${this.qtdReceitasReprovadas} | Nota Média das Receitas: ${this.notaMediaReceitas} | Quantidade de Receitas Publicadas: ${this.qtdReceitasPublicadas}"
     }
 
     override fun clone(): Any
