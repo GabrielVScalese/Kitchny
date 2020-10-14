@@ -36,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
         btnEntrar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                usuario = new br.unicamp.kitchny.kotlin.Usuario(etEmail.getText().toString(), etSenha.getText().toString());
+                usuario = new Usuario(etEmail.getText().toString(), etSenha.getText().toString());
                 MyTask task = new MyTask();
                 task.execute("http://192.168.0.28:3000/api/autenticateUsuario");
             }
@@ -73,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
         protected void onPostExecute(String s) {
             if (response)
             {
-                Intent intent = new Intent (MainActivity.this, TelaInicial.class);
+                Intent intent = new Intent (MainActivity.this, TelaInicialUsuario.class);
                 startActivity(intent);
             }
             else
