@@ -83,6 +83,7 @@ class Usuario (email: String, nome: String, senha: String, qtdReceitasAprovadas:
 
     constructor(email: String, senha: String) : this(email, "UsuarioProvisorio12345", senha, 0, 0, 0.0F)
     constructor(usuario: Usuario) : this(usuario.email, usuario.nome, usuario.senha, usuario.qtdReceitasAprovadas, usuario.qtdReceitasReprovadas, usuario.notaMediaReceitas)
+    constructor(email: String, nome: String, senha: String) : this(email, nome, senha, 0, 0, 0.0F)
 
     override fun equals(other: Any?): Boolean
     {

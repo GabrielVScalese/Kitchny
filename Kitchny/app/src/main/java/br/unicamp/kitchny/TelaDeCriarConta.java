@@ -3,6 +3,7 @@ package br.unicamp.kitchny;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.strictmode.CleartextNetworkViolation;
@@ -10,7 +11,14 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import org.json.JSONObject;
+
 import br.unicamp.kitchny.kotlin.*;
+import retrofit.Call;
+import retrofit.Callback;
+import retrofit.Response;
+import retrofit.Retrofit;
 
 import java.util.UUID;
 
@@ -42,8 +50,7 @@ public class TelaDeCriarConta extends AppCompatActivity {
                 if (etSenha.getText().toString().equals(etConfirmarSenha.getText().toString()))
                 {
                     usuario = new Usuario(etEmail.getText().toString(), etNome.getText().toString(), etSenha.getText().toString());
-                    MyTask task = new MyTask();
-                    task.execute("http://192.168.0.28:3000/api/insertUsuario");
+                    PostUsuario(usuario);
                 }
                 else
                     Toast.makeText(TelaDeCriarConta.this, "Senhas não são iguais", Toast.LENGTH_LONG).show();
@@ -51,26 +58,34 @@ public class TelaDeCriarConta extends AppCompatActivity {
         });
     }
 
-    private class MyTask extends AsyncTask<String, String, String> {
+    private void PostUsuario (Usuario usuario)
+    {
+        Call<Status> call = new RetrofitConfig().getService().insertUsuario(usuario);
+        call.enqueue(new Callback<Status>() {
+            @SuppressLint("SetTextI18n")
+            @Override
+            public void onResponse(Response<Status> response, Retrofit retrofit) {
+                if (response.isSuccess())
+                {
+                    Intent intent = new Intent (TelaDeCriarConta.this, TelaInicial.class);
+                    startActivity(intent);
+                }
+                else
+                {
+                    try
+                    {
+                        JSONObject jObjError = new JSONObject(response.errorBody().string());
+                        Toast.makeText(TelaDeCriarConta.this, jObjError.getString("status"), Toast.LENGTH_SHORT).show();
+                    }
+                    catch (Exception e)
+                    { }
+                }
+            }
 
-        @Override
-        protected void onPreExecute() {
-
-        }
-
-        @Override
-        protected String doInBackground(String... params) {
-            ClienteWS.postObjeto(usuario, Integer.class, params[0]);
-            return null;
-        }
-
-        @Override
-        protected void onProgressUpdate(String... values) {
-        }
-
-        @Override
-        protected void onPostExecute(String s) {
-            finish();
-        }
+            @Override
+            public void onFailure(Throwable t) {
+                Toast.makeText(TelaDeCriarConta.this, "Falha obtenção de dados do usuários", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }

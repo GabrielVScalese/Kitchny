@@ -3,12 +3,20 @@ package br.unicamp.kitchny;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import org.json.JSONObject;
 
 import br.unicamp.kitchny.kotlin.Usuario;
+import retrofit.Call;
+import retrofit.Callback;
+import retrofit.Response;
+import retrofit.Retrofit;
 
 public class TelaInicialUsuario extends AppCompatActivity {
 
@@ -27,54 +35,42 @@ public class TelaInicialUsuario extends AppCompatActivity {
         setContentView(R.layout.activity_tela_inicial_usuario);
 
         getSupportActionBar().hide();
-        tvNomeUsuario = findViewById(R.id.tvNomeUsuario);
+        /*tvNomeUsuario = findViewById(R.id);
         tvEmailUsuario = findViewById(R.id.tvEmailUsuario);
         tvAprovacao = findViewById(R.id.tvAprovacao);
         tvReprovacao = findViewById(R.id.tvReprovacao);
         tvMedia = findViewById(R.id.tvMedia);
-        tvReceitas = findViewById(R.id.tvReceitas);
-
-        MyTask task = new MyTask();
-        task.execute("http://192.168.0.28:3000/api/usuario");
+        tvReceitas = findViewById(R.id.tvReceitas);*/
     }
 
-    private class MyTask extends AsyncTask<String, String, String>
+    private void GetUsuario (String email)
     {
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-        }
-
-        @Override
-        protected String doInBackground(String... strings) {
-            try {
-                usuario = (JacksonImmutable.Usuario) ClienteWS.getObjeto(JacksonImmutable.Usuario.class, strings[0], "gabriel.scalese@hotmail.com");
+        Call<Usuario> call = new RetrofitConfig().getService().getUsuario(email);
+        call.enqueue(new Callback<Usuario>() {
+            @SuppressLint("SetTextI18n")
+            @Override
+            public void onResponse(Response<Usuario> response, Retrofit retrofit) {
+                if (response.isSuccess())
+                {
+                    Intent intent = new Intent (TelaInicialUsuario.this, TelaInicial.class);
+                    startActivity(intent);
+                }
+                else
+                {
+                    try
+                    {
+                        JSONObject jObjError = new JSONObject(response.errorBody().string());
+                        Toast.makeText(TelaInicialUsuario.this, jObjError.getString("status"), Toast.LENGTH_SHORT).show();
+                    }
+                    catch (Exception e)
+                    { }
+                }
             }
-            catch (Exception error)
-            {
-                error.printStackTrace();
+
+            @Override
+            public void onFailure(Throwable t) {
+                Toast.makeText(TelaInicialUsuario.this, "Falha obtenção de dados do usuários", Toast.LENGTH_SHORT).show();
             }
-
-            return null;
-        }
-
-        @Override
-        protected void onProgressUpdate(String... values) {
-            super.onProgressUpdate(values);
-        }
-
-        @SuppressLint("SetTextI18n")
-        @Override
-        protected void onPostExecute(String s) {
-
-            tvNomeUsuario.setText(usuario.getNome());
-            tvEmailUsuario.setText(usuario.getEmail());
-            tvAprovacao.setText("Você aprovou " + usuario.getQtdReceitasAprovadas() + " receitas");
-            tvReprovacao.setText("Você reprovou " + usuario.getQtdReceitasReprovadas() + " receitas");
-            tvMedia.setText("A nota média de suas receitas publicadas é " + usuario.getNotaMediaReceitas());
-            tvReceitas.setText("Você publicou " + usuario.getQtdReceitasPublicadas() + " receitas");
-
-            super.onPostExecute(s);
-        }
+        });
     }
 }

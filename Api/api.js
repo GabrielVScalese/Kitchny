@@ -47,7 +47,7 @@ router.get("/api/receitas", async (req, res) => {
 
     return res.json(response.recordset);
   } catch (error) {
-    return res.status(500).send({ error: "Erro na busca de receitas!" });
+    return res.status(500).send({ status: "Erro na busca de receitas!" });
   }
 });
 
@@ -60,7 +60,7 @@ router.get("/api/receita/:id?", async (req, res) => {
     
     return res.json(receita);
   } catch (error) {
-    return res.status(500).send({ error: "Erro na busca de uma receita!" });
+    return res.status(500).send({ status: "Erro na busca de uma receita!" });
   }
 });
 
@@ -97,7 +97,7 @@ router.get("/api/receitasFromIngredientes", async (req, res) => {
 
     return res.json(obj);
   } catch (error) {
-    return res.status(500).send({ error: "Erro na busca de receitas!" });
+    return res.status(500).send({ status: "Erro na busca de receitas!" });
   }
 });
 
@@ -134,7 +134,7 @@ router.get("/api/ingredientesReceita/:id?", async (req, res) => {
   } catch (error) {
     return res
       .status(500)
-      .send({ error: "Erro na busca de ingredienes de uma receita" });
+      .send({ status: "Erro na busca de ingredienes de uma receita" });
   }
 });
 
@@ -172,9 +172,9 @@ router.post("/api/insertReceita", async (req, res) => {
         ")"
     );
 
-    return res.status(200).send({ succesfull: "Receita incluída!" });
+    return res.status(200).send({ status: "Receita incluída!" });
   } catch (error) {
-    return res.status(500).send({ error: "Erro na inclusão de receita" });
+    return res.status(500).send({ status: "Erro na inclusão de receita" });
   }
 });
 
@@ -209,9 +209,9 @@ router.post("/api/insertReceitas", async function (req, res) {
       );
     }
 
-    return res.status(200).send({ succesfull: "Receitas incluídas!" });
+    return res.status(200).send({ status: "Receitas incluídas!" });
   } catch (error) {
-    return res.status(500).send({ error: "Erro na inclusão de receitas" });
+    return res.status(500).send({ status: "Erro na inclusão de receitas" });
   }
 });
 
@@ -230,16 +230,16 @@ router.delete("/api/deleteReceita/:id?", async (req, res) => {
     let nomeReceita = req.params.id;
 
     if (await getReceita(nomeReceita) == undefined)
-        return res.status(404).send({error: "Receita inexistente!"});
+        return res.status(404).send({status: "Receita inexistente!"});
 
     console.log("a");
     await execSQL(
       "DELETE FROM KITCHNY.DBO.RECEITAS WHERE NOME = " + "'" + nomeReceita + "'"
     );
 
-    return res.status(200).send({ succesfull: "Receita excluída!" });
+    return res.status(200).send({ status: "Receita excluída!" });
   } catch (error) {
-    return res.status(500).send({ error: "Erro na exclusão de receita" });
+    return res.status(500).send({ status: "Erro na exclusão de receita" });
   }
 });
 
@@ -248,9 +248,9 @@ router.delete("/api/deleteReceitas", async (req, res) => {
   try {
     await execSQL("DELETE FROM KITCHNY.DBO.RECEITAS");
 
-    return res.status(200).send({ succesfull: "Receitas excluída!" });
+    return res.status(200).send({ status: "Receitas excluída!" });
   } catch (error) {
-    return res.status(500).send({ error: "Erro na exclusão de receitas" });
+    return res.status(500).send({ status: "Erro na exclusão de receitas" });
   }
 });
 
@@ -263,7 +263,7 @@ router.get("/api/ingredientes", async (req, res) => {
 
     return res.json(response.recordset);
   } catch (error) {
-    return res.status(500).send({ error: "Erro na busca de ingredientes!" });
+    return res.status(500).send({ status: "Erro na busca de ingredientes!" });
   }
 });
 
@@ -277,7 +277,7 @@ router.get("/api/ingrediente/:id?", async (req, res) => {
 
     return res.json(response.recordset[0]);
   } catch (error) {
-    return res.status(500).send({ error: "Erro na busca de ingrediente!" });
+    return res.status(500).send({ status: "Erro na busca de ingrediente!" });
   }
 });
 
@@ -289,9 +289,9 @@ router.post("/api/insertIngredientes", async (req, res) => {
       await registrarIngredientes(ingredientes);
     }
 
-    return res.status(200).send({ succesfull: "Ingredientes incluídos!" });
+    return res.status(200).send({ status: "Ingredientes incluídos!" });
   } catch (error) {
-    return res.status(500).send({ error: "Erro na inclusão de ingredientes" });
+    return res.status(500).send({ status: "Erro na inclusão de ingredientes" });
   }
 });
 
@@ -370,7 +370,7 @@ router.get("/api/usuarios", async (req, res) => {
 
     return res.json(response.recordset);
   } catch (error) {
-    return res.status(500).send({ error: "Erro na busca de alunos!" });
+    return res.status(500).send({ status: "Erro na busca de alunos!" });
   }
 });
 
@@ -384,7 +384,7 @@ router.get("/api/usuario/:id?", async (req, res) => {
 
     return res.json(response.recordset[0]);
   } catch (error) {
-    return res.status(500).send({ error: "Erro na busca de usuário!" });
+    return res.status(500).send({ status: "Erro na busca de usuário!" });
   }
 });
 
@@ -431,9 +431,9 @@ router.post("/api/insertUsuario", async (req, res) => {
         ")"
     );
 
-    return res.status(200).send({ succesfull: "Aluno incluído!" });
+    return res.status(200).send({ status: "Aluno incluído!" });
   } catch (error) {
-    return res.status(500).send({ error: "Erro na inserção de usuário!" });
+    return res.status(500).send({ status: "Erro na inserção de usuário!" });
   }
 });
 
@@ -443,7 +443,7 @@ router.put("/api/updateUsuario", async (req, res) => {
     const usuario = req.body;
     
     if (getUsuario(usuario.email) == undefined)
-        return res.status(404).send({error: "Usuário inexistente"});
+        return res.status(404).send({status: "Usuário inexistente"});
 
     await execSQL(
       "UPDATE KITCHNY.DBO.USUARIOS \n SET NOME = " +
@@ -459,9 +459,9 @@ router.put("/api/updateUsuario", async (req, res) => {
         "';"
     );
 
-    return res.status(200).send({ succesfull: "Usuário alterado!" });
+    return res.status(200).send({ status: "Usuário alterado!" });
   } catch (error) {
-    return res.status(500).send({ error: "Erro na alteração de usuário" });
+    return res.status(500).send({ status: "Erro na alteração de usuário" });
   }
 });
 
@@ -476,12 +476,26 @@ router.post("/api/autenticateUsuario", async (req, res) => {
         "'"
     );
     if (responseSenha.recordset[0].SENHA == usuario.senha)
-      return res.status(200).send({ succesfull: "Senha correta!" });
-    else return res.status(404).send({ succesfull: "Senha incorreta!" });
+      return res.status(200).send({ status: "Senha correta!" });
+    else return res.status(404).send({ status: "Senha incorreta!" });
   } catch (error) {
-    return res.status(500).send({ error: "Erro na busca de usuário" });
+    return res.status(500).send({ status: "Erro na busca de usuário" });
   }
 });
+
+router.delete("/api/deleteUsuario/:id?", async (req, res) => {
+  try
+  {
+    const email = req.params.id;
+    await execSQL ("DELETE FROM KITCHNY.DBO.USUARIOS WHERE EMAIL = '" + email + "'");
+    
+    return res.status(200).send({status: "Usuário excluído!"});
+  }
+  catch (error)
+  {
+    return res.status(500).send({status: "Erro na exclusão de usuário!"});
+  }
+})
 
 /////////////////////////////////////////////////////////////////////////////// ListaDeCompras
 
@@ -498,7 +512,7 @@ router.get("/api/listaDeCompras/:id?", async (req, res) => {
   } catch (error) {
     return res
       .status(500)
-      .send({ error: "Erro na busca de lista de compras!" });
+      .send({ status: "Erro na busca de lista de compras!" });
   }
 });
 
@@ -526,11 +540,11 @@ router.post("/api/insertListaDeCompras", async (req, res) => {
         ")"
     );
 
-    return res.status(200).send({ succesfull: "Lista de compras inserida!" });
+    return res.status(200).send({ status: "Lista de compras inserida!" });
   } catch (error) {
     return res
       .status(500)
-      .send({ error: "Erro na inclusão de lista de compras!" });
+      .send({ status: "Erro na inclusão de lista de compras!" });
   }
 });
 
