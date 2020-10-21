@@ -499,22 +499,40 @@ router.delete("/api/deleteUsuario/:id?", async (req, res) => {
 
 /////////////////////////////////////////////////////////////////////////////// ListaDeCompras
 
+async function getIngrediente(id)
+{
+  const res = await execSQL("SELECT * FROM KITCHNY.DBO.INGREDIENTES WHERE ID = " + id);
+  const ingrediente = res.recordset[0];
+  
+  return ingrediente;
+}
+
 // Retorna uma lista de compras de um determinado usuário (email)
 router.get("/api/listaDeCompras/:id?", async (req, res) => {
   try {
     let email = req.params.id;
     const id = await getIdUsuario(email);
-    const responseFinal = await execSQL(
+    const response = await execSQL(
       "SELECT * FROM KITCHNY.DBO.LISTADECOMPRAS WHERE IDUSUARIO = " + id
     );
+    
+    let listaDeCompras = response.recordset;
 
-    return res.json(responseFinal.recordset);
+    for(let i = 0; i < listaDeCompras.length; i++)
+    {
+      const ingrediente = await getIngrediente(response.recordset[0].idIngrediente);
+      listaDeCompras[i] = {nomeIngrediente: ingrediente.nome, quantidade: response.recordset[0].quantidade};
+    }
+    
+    return res.json(listaDeCompras);
   } catch (error) {
     return res
       .status(500)
       .send({ status: "Erro na busca de lista de compras!" });
   }
 });
+
+
 
 async function getIdUsuario(email) {
   const responseInicial = await execSQL(

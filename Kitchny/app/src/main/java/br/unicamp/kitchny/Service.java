@@ -2,6 +2,7 @@ package br.unicamp.kitchny;
 
 import java.util.List;
 
+import br.unicamp.kitchny.kotlin.Compra;
 import br.unicamp.kitchny.kotlin.Usuario;
 import retrofit.Call;
 import retrofit.http.*;
@@ -22,4 +23,7 @@ public interface Service {
 
     @GET("usuario/{email}")
     Call<Usuario> getUsuario (@Path("email") String email);
+
+    @GET("listaDeCompras/{email}")
+    Call<List<Compra>> getListaDeCompras(@Path("email") String email);
 }

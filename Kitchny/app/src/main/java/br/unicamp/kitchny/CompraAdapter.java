@@ -14,6 +14,8 @@ import androidx.annotation.Nullable;
 
 import java.util.List;
 
+import br.unicamp.kitchny.kotlin.Compra;
+
 public class CompraAdapter extends ArrayAdapter<Compra> {
 
     private Context context;
@@ -43,8 +45,8 @@ public class CompraAdapter extends ArrayAdapter<Compra> {
         TextView qtd = view.findViewById(R.id.txtQtd);
 
         Compra compra = dados.get(position);
-        ingrediente.setText("" + compra.getIngrediente());
-        qtd.setText("" + compra.getQtd());
+        ingrediente.setText("" + compra.getNomeIngrediente().trim());
+        qtd.setText("x " + compra.getQuantidade());
 
 
         return view;

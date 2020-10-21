@@ -31,11 +31,53 @@
         android:background="#C4C4C4"
         android:layout_gravity="center"/>
 
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="10dp"
+        android:gravity="center"
+        >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="Ingrediente"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:layout_marginRight="20dp"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="Quantidade"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:layout_marginRight="20dp"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="Remover"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:layout_marginRight="20dp"
+            />
+
+    </LinearLayout>
+
     <ListView
         android:id="@+id/listaCompras"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scrollbars="vertical"
+        android:layout_marginTop="20dp"
         />
 
     <ImageView
