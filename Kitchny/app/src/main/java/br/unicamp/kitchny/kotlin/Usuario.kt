@@ -20,7 +20,7 @@ class Usuario (email: String, nome: String, senha: String, qtdReceitasAprovadas:
                 throw Exception("Nome inválido")
 
             var temLetra = false
-            for(c: Char in value)
+            for(c in value)
             {
                 if(c.isLetter())
                 {
