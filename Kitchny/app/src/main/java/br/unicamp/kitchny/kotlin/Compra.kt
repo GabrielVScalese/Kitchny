@@ -1,6 +1,6 @@
 package br.unicamp.kitchny.kotlin
 
-class Compra(nomeIngrediente: String, quantidade: String)
+class Compra(nomeIngrediente: String, quantidade: String) : Cloneable
 {
     var nomeIngrediente = ""
     set(value)
@@ -36,5 +36,46 @@ class Compra(nomeIngrediente: String, quantidade: String)
     {
         this.nomeIngrediente = nomeIngrediente
         this.quantidade = quantidade
+    }
+
+    constructor(compra: Compra) : this(compra.nomeIngrediente, compra.quantidade)
+
+    override fun equals(other: Any?): Boolean
+    {
+        val compra = other as Compra
+        if(this.nomeIngrediente == compra.nomeIngrediente && this.quantidade == compra.quantidade)
+            return true
+
+        return false
+    }
+
+    override fun hashCode(): Int
+    {
+        var ret = 17
+
+        ret = ret * 17 + this.nomeIngrediente.hashCode()
+        ret = ret * 17 + this.quantidade.hashCode()
+
+        if(ret < 0)
+            ret = -ret
+
+        return ret
+    }
+
+    override fun toString(): String
+    {
+        return "Nome: ${this.nomeIngrediente} | Quantidade: ${this.quantidade}"
+    }
+
+    override fun clone(): Any
+    {
+        var ret: Compra? = null
+        try
+        {
+            ret = Compra(this)
+        }
+        catch(ignored: Exception){}
+
+        return ret as Compra
     }
 }
