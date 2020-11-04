@@ -45,7 +45,7 @@ public class CompraAdapter extends ArrayAdapter<Compra> {
         TextView qtd = view.findViewById(R.id.txtQtd);
 
         Compra compra = dados.get(position);
-        ingrediente.setText("" + compra.getNomeIngrediente().trim());
+        ingrediente.setText("" + compra.getNomeIngrediente());
         qtd.setText("x " + compra.getQuantidade());
 
 
