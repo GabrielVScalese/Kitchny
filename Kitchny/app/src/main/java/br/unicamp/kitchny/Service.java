@@ -25,5 +25,5 @@ public interface Service {
     Call<Usuario> getUsuario (@Path("email") String email);
 
     @GET("listaDeCompras/{email}")
-    Call<List<Compra>> getListaDeCompras(@Path("email") String email);
+    Call<List<Compra>> getCestaDeCompras(@Path("email") String email);
 }

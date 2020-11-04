@@ -2,11 +2,13 @@ package br.unicamp.kitchny;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -16,6 +18,7 @@ import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
+
 
 import org.json.JSONObject;
 
@@ -34,32 +37,39 @@ public class TelaInicialCesta extends AppCompatActivity {
 
     ListView listView;
     TextView tvTitulo;
-    ImageView btnClear;
+    TextView txtTitulo;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tela_inicial_cesta);
 
+
         listView = findViewById(R.id.listaCompras);
         tvTitulo = findViewById(R.id.tvTitulo);
-        btnClear = findViewById(R.id.btnClear);
+
+        final LayoutInflater factory = getLayoutInflater();
+
+        final View textEntryView = factory.inflate(R.layout.layout_dialog, null);
+
+        txtTitulo = textEntryView.findViewById(R.id.txtTitulo);
+
 
         getListaDeCompras("gabriel.scalese@hotmail.com");
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Compra compra = (Compra)listView.getItemAtPosition(position);
-                AlertDialog.Builder alert = new AlertDialog.Builder(TelaInicialCesta.this);
-                alert.setTitle("" + compra.getNomeIngrediente());
-                alert.show();
+                showEditDialog(compra.getNomeIngrediente());
             }
         });
     }
 
     private void getListaDeCompras(String email)
     {
-        Call<List<Compra>> call = new RetrofitConfig().getService().getListaDeCompras(email);
+        Call<List<Compra>> call = new RetrofitConfig().getService().getCestaDeCompras(email);
         call.enqueue(new Callback<List<Compra>>() {
             @SuppressLint("SetTextI18n")
             @Override
@@ -79,8 +89,16 @@ public class TelaInicialCesta extends AppCompatActivity {
 
             @Override
             public void onFailure(Throwable t) {
-
+                Toast.makeText(TelaInicialCesta.this, "Falha na busca de lista de compras", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    private void showEditDialog(String titulo) {
+        txtTitulo.setText(titulo);
+        FragmentManager fm = getSupportFragmentManager();
+        Dialog editNameDialogFragment = Dialog.newInstance("title");
+        editNameDialogFragment.show(fm, "layout_dialog");
+
     }
 }
