@@ -511,9 +511,9 @@ async function getIngrediente(id)
 router.get("/api/listaDeCompras/:id?", async (req, res) => {
   try {
     let email = req.params.id;
-    const id = await getIdUsuario(email);
+    const usuario = await getUsuario(email)
     const response = await execSQL(
-      "SELECT * FROM KITCHNY.DBO.LISTADECOMPRAS WHERE IDUSUARIO = " + id
+      "SELECT * FROM KITCHNY.DBO.LISTADECOMPRAS WHERE IDUSUARIO = " + usuario.id
     );
     
     let listaDeCompras = response.recordset;
@@ -532,8 +532,6 @@ router.get("/api/listaDeCompras/:id?", async (req, res) => {
   }
 });
 
-
-
 async function getIdUsuario(email) {
   const responseInicial = await execSQL(
     "SELECT ID FROM KITCHNY.DBO.USUARIOS WHERE EMAIL = " + "'" + email + "'"
@@ -542,7 +540,7 @@ async function getIdUsuario(email) {
   return responseInicial.recordset[0].ID;
 }
 
-// Insere uma lista de compras
+// Insere uma lista de compras (arrumar)
 router.post("/api/insertListaDeCompras", async (req, res) => {
   try {
     const listaDeCompras = req.body;
@@ -565,5 +563,6 @@ router.post("/api/insertListaDeCompras", async (req, res) => {
       .send({ status: "Erro na inclusão de lista de compras!" });
   }
 });
+
 
 app.use(router);

@@ -97,7 +97,7 @@ public class TelaInicialCesta extends AppCompatActivity {
     private void showEditDialog(String titulo) {
         txtTitulo.setText(titulo);
         FragmentManager fm = getSupportFragmentManager();
-        Dialog editNameDialogFragment = Dialog.newInstance("title");
+        Dialog editNameDialogFragment = Dialog.newInstance(titulo);
         editNameDialogFragment.show(fm, "layout_dialog");
 
     }

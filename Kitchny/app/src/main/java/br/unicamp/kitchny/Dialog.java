@@ -13,10 +13,13 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
+import org.w3c.dom.Text;
+
 import java.util.Objects;
 
 public class Dialog extends DialogFragment {
     private EditText mEditText;
+    private TextView textView;
 
     public Dialog() {
     }
@@ -24,7 +27,7 @@ public class Dialog extends DialogFragment {
     public static Dialog newInstance(String title) {
         Dialog frag = new Dialog();
         Bundle args = new Bundle();
-        args.putString("titulo", title);
+        args.putString("titulo", title.trim());
         frag.setArguments(args);
         return frag;
     }
@@ -40,9 +43,11 @@ public class Dialog extends DialogFragment {
         super.onViewCreated(view, savedInstanceState);
             // Get field from view
             mEditText = (EditText) view.findViewById(R.id.txtQuantidade);
+            textView = view.findViewById(R.id.txtTitulo);
             // Fetch arguments from bundle and set title
             assert getArguments() != null;
-            String title = getArguments().getString("titulo", "Enter Name");
+            String title = getArguments().getString("titulo");
+            textView.setText(title.substring(0,1).toUpperCase() + title.substring(1, title.length()));
             Objects.requireNonNull(getDialog()).setTitle(title);
             // Show soft keyboard automatically and request focus to field
             mEditText.requestFocus();
