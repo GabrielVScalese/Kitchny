@@ -190,14 +190,15 @@ router.post("/api/insertReceita", async (req, res) => {
 router.post("/api/insertReceitas", async function (req, res) {
   try {
     for (let i = 0; i < receitas.length; i++) {
-      let nomeReceita = receita[i];
+      let nomeReceita = receitas[i].nome;
       let rendimento = "";
-      if (receita[i].secao[1] != undefined)
-        var modoDePreparo = obterModoDePreparo(receita[i]);
+      let imagem = "";
+      if (receitas[i].secao[1] != undefined)
+        var modoDePreparo = obterModoDePreparo(receitas[i]);
       else continue;
       let avaliacao = null;
       await execSQL(
-        "INSERT INTO KITCHNY.DBO.RECEITAS (NOME, RENDIMENTO, MODODEPREPARO, AVALIACAO) VALUES (" +
+        "INSERT INTO KITCHNY.DBO.RECEITAS (NOME, RENDIMENTO, MODODEPREPARO, IMAGEM, AVALIACAO) VALUES (" +
           "'" +
           nomeReceita +
           "'" +
@@ -211,14 +212,17 @@ router.post("/api/insertReceitas", async function (req, res) {
           "'" +
           "," +
           "'" +
-          avaliacao +
+          imagem +
           "'" +
+          "," +
+          avaliacao +
           ")"
       );
     }
 
     return res.status(200).send({ status: "Receitas incluídas!" });
   } catch (error) {
+    console.log(error);
     return res.status(500).send({ status: "Erro na inclusão de receitas" });
   }
 });
