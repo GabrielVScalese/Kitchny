@@ -45,7 +45,15 @@ router.get("/api/receitas", async (req, res) => {
   try {
     let response = await execSQL("SELECT * FROM KITCHNY.DBO.RECEITAS");
 
-    return res.json(response.recordset);
+    let receitas = [];
+    for(let i = 0; i < response.recordset.length; i++)
+    {
+      let receita = {nome: response.recordset[i].nome, rendimento: response.recordset[i].rendimento, modoDePreparo: response.recordset[i].modoDePreparo,
+                    imagem: response.recordset[i].imagem, avaliacao: response.recordset[i].avaliacao};
+
+      receitas.push(receita);
+    }
+    return res.json(receitas);
   } catch (error) {
     return res.status(500).send({ status: "Erro na busca de receitas!" });
   }

@@ -3,6 +3,7 @@ package br.unicamp.kitchny;
 import java.util.List;
 
 import br.unicamp.kitchny.kotlin.Compra;
+import br.unicamp.kitchny.kotlin.Receita;
 import br.unicamp.kitchny.kotlin.Usuario;
 import retrofit.Call;
 import retrofit.http.*;
@@ -26,4 +27,7 @@ public interface Service {
 
     @GET("listaDeCompras/{email}")
     Call<List<Compra>> getCestaDeCompras(@Path("email") String email);
+
+    @GET("receitas")
+    Call<List<Receita>> getReceitas();
 }

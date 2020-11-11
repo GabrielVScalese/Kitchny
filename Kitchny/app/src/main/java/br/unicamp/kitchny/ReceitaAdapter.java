@@ -1,0 +1,109 @@
+package br.unicamp.kitchny;
+
+import android.annotation.SuppressLint;
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.media.Image;
+import android.os.AsyncTask;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.List;
+
+import br.unicamp.kitchny.kotlin.Receita;
+
+public class ReceitaAdapter extends ArrayAdapter<Receita> {
+
+    private Bitmap imagemReceita;
+    ImageView imagem;
+    private Context context;
+    private int layoutResourceId;
+    private List<Receita> dados;
+
+    public ReceitaAdapter(@NonNull Context context, int resource, @NonNull List<Receita> dados) {
+        super(context, resource, dados);
+
+        this.context = context;
+        this.layoutResourceId = resource;
+        this.dados = dados;
+    }
+
+    @SuppressLint("SetTextI18n")
+    @NonNull
+    @Override
+    public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent){
+        View view = convertView;
+
+        if(view == null){
+            LayoutInflater layoutinflater = LayoutInflater.from(context);
+            view = layoutinflater.inflate(layoutResourceId, parent, false);
+        }
+
+
+        TextView nomeReceita = view.findViewById(R.id.txtNomeReceita);
+
+        Receita receita = dados.get(position);
+        MyTask task = new MyTask();
+        task.execute(receita.getImagem());
+        imagem.setImageBitmap(imagemReceita);
+        nomeReceita.setText(receita.getNome());
+
+
+        return view;
+    }
+
+    public static Bitmap getBitmapFromURL(String src) {
+        try {
+            URL url = new URL(src);
+            HttpURLConnection con = (HttpURLConnection)url.openConnection();
+            InputStream input = con.getInputStream();
+            Bitmap myBitmap = BitmapFactory.decodeStream(input);
+            Log.e("Bitmap","returned");
+            return myBitmap;
+        } catch (IOException e) {
+
+            e.printStackTrace();
+            Log.e("Exception",e.getMessage());
+            return null;
+        }
+    }
+
+    private class MyTask extends AsyncTask<String, String, Bitmap>
+    {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected Bitmap doInBackground(String[] string) {
+            return getBitmapFromURL(string[0]);
+        }
+
+        @Override
+        protected void onProgressUpdate(String[] values) {
+            super.onProgressUpdate(values);
+        }
+
+        @Override
+        protected void onPostExecute(Bitmap o) {
+            super.onPostExecute(o);
+            imagemReceita = o;
+        }
+    }
+
+}
