@@ -8,19 +8,25 @@
     tools:context=".TelaInicial">
 
     <EditText
+        android:paddingLeft="10sp"
+        android:layout_marginTop="5dp"
         android:layout_width="300dp"
         android:layout_height="wrap_content"
         android:hint="Buscar por uma receita"
         android:layout_gravity="center"
         android:drawableEnd="@drawable/ic_baseline_search_24"
+        android:textSize="16sp"
+        android:id="@+id/edtNomeReceita"
         />
 
     <ListView
         android:layout_width="match_parent"
-        android:layout_height="450dp"
+        android:layout_height="380dp"
         android:layout_marginTop="13dp"
         android:scrollbars="vertical"
         android:id="@+id/listaReceitas"
+        android:divider="@null"
+        android:dividerHeight="0dp"
         />
 
     <Button
@@ -32,8 +38,9 @@
         android:drawableLeft="@drawable/ic_baseline_add_24"
         android:drawablePadding="10dp"
         android:paddingLeft="5dp"
-        android:layout_marginTop="5dp"
+        android:layout_marginTop="15dp"
         />
+
     <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="match_parent">
@@ -45,5 +52,6 @@
             android:layout_alignParentBottom="true"
             app:menu="@menu/bottom_navigation_menu" />
     </RelativeLayout>
+
 </LinearLayout>
 

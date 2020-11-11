@@ -54,56 +54,32 @@ public class ReceitaAdapter extends ArrayAdapter<Receita> {
 
 
         TextView nomeReceita = view.findViewById(R.id.txtNomeReceita);
+        imagem = view.findViewById(R.id.ImgImagem);
 
         Receita receita = dados.get(position);
-        MyTask task = new MyTask();
-        task.execute(receita.getImagem());
-        imagem.setImageBitmap(imagemReceita);
+        DownloadImageTask dt = new DownloadImageTask();
+        dt.execute(receita.getImagem());
         nomeReceita.setText(receita.getNome());
-
 
         return view;
     }
 
-    public static Bitmap getBitmapFromURL(String src) {
-        try {
-            URL url = new URL(src);
-            HttpURLConnection con = (HttpURLConnection)url.openConnection();
-            InputStream input = con.getInputStream();
-            Bitmap myBitmap = BitmapFactory.decodeStream(input);
-            Log.e("Bitmap","returned");
-            return myBitmap;
-        } catch (IOException e) {
+    private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
+        protected Bitmap doInBackground(String... urls) {
+            String urldisplay = urls[0];
+            Bitmap mIcon11 = null;
+            try {
+                InputStream in = new java.net.URL(urldisplay).openStream();
+                mIcon11 = BitmapFactory.decodeStream(in);
+            } catch (Exception e) {
+                Log.e("Error", e.getMessage());
+                e.printStackTrace();
+            }
+            return mIcon11;
+        }
 
-            e.printStackTrace();
-            Log.e("Exception",e.getMessage());
-            return null;
+        protected void onPostExecute(Bitmap result) {
+            imagem.setImageBitmap(Bitmap.createScaledBitmap(result, 300, 150, false));
         }
     }
-
-    private class MyTask extends AsyncTask<String, String, Bitmap>
-    {
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-        }
-
-        @Override
-        protected Bitmap doInBackground(String[] string) {
-            return getBitmapFromURL(string[0]);
-        }
-
-        @Override
-        protected void onProgressUpdate(String[] values) {
-            super.onProgressUpdate(values);
-        }
-
-        @Override
-        protected void onPostExecute(Bitmap o) {
-            super.onPostExecute(o);
-            imagemReceita = o;
-        }
-    }
-
 }

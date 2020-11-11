@@ -30,4 +30,7 @@ public interface Service {
 
     @GET("receitas")
     Call<List<Receita>> getReceitas();
+
+    @GET("receita/{nomeReceita}")
+    Call<Receita> getReceita(@Path("nomeReceita") String nomeReceita);
 }
