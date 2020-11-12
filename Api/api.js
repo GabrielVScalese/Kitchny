@@ -65,6 +65,9 @@ router.get("/api/receita/:id?", async (req, res) => {
     let nomeReceita = req.params.id;
 
     const receita = await getReceita(nomeReceita);
+
+    if (receita == undefined)
+        return res.status(404).send({status: "Receita não encontrada!"});
     
     return res.json(receita);
   } catch (error) {

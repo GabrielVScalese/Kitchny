@@ -32,6 +32,7 @@ public class ReceitaAdapter extends ArrayAdapter<Receita> {
     private Context context;
     private int layoutResourceId;
     private List<Receita> dados;
+    private String urlDefault;
 
     public ReceitaAdapter(@NonNull Context context, int resource, @NonNull List<Receita> dados) {
         super(context, resource, dados);
@@ -57,9 +58,20 @@ public class ReceitaAdapter extends ArrayAdapter<Receita> {
         imagem = view.findViewById(R.id.ImgImagem);
 
         Receita receita = dados.get(position);
-        DownloadImageTask dt = new DownloadImageTask();
-        dt.execute(receita.getImagem());
-        nomeReceita.setText(receita.getNome());
+
+        if (receita.getImagem() != null && !receita.getImagem().equals(""))
+        {
+            urlDefault = receita.getImagem();
+            DownloadImageTask dt = new DownloadImageTask();
+            dt.execute(receita.getImagem());
+            nomeReceita.setText(receita.getNome());
+        }
+        else
+        {
+            DownloadImageTask dt = new DownloadImageTask();
+            dt.execute(urlDefault);
+            nomeReceita.setText(receita.getNome());
+        }
 
         return view;
     }

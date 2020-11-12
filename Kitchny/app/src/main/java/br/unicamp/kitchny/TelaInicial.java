@@ -48,7 +48,11 @@ public class TelaInicial extends AppCompatActivity {
 
                 if(event.getAction() == MotionEvent.ACTION_UP) {
                     if(event.getRawX() >= (edtNomeReceita.getRight() - edtNomeReceita.getCompoundDrawables()[DRAWABLE_RIGHT].getBounds().width())) {
-                        getReceita(edtNomeReceita.getText().toString());
+                        String nomeReceita = edtNomeReceita.getText().toString();
+                        if (!nomeReceita.equals(""))
+                            getReceita(edtNomeReceita.getText().toString());
+                        else
+                            getListaReceitas();
 
                         return true;
                     }
@@ -73,7 +77,7 @@ public class TelaInicial extends AppCompatActivity {
                 }
                 else
                 {
-                    Toast.makeText(TelaInicial.this, "Falha no carregamento das receitas", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(TelaInicial.this, "Receita não encontrada!", Toast.LENGTH_SHORT).show();
                 }
             }
 
