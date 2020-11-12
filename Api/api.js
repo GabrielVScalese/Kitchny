@@ -79,10 +79,7 @@ router.get("/api/receita/:id?", async (req, res) => {
 async function getReceita (receita)
 {
   const response = await execSQL(
-    "SELECT * FROM KITCHNY.DBO.RECEITAS WHERE NOME = " +
-      "'" +
-      receita +
-      "'"
+    "SELECT * FROM KITCHNY.DBO.RECEITAS WHERE NOME LIKE '%" + receita + "%'"
   );
   
   if (response.rowsAffected == 0)
@@ -116,7 +113,7 @@ async function receitaFromIngrediente(idReceita) {
 }
 
 // Rota nova
-router.get("/api/receitaFrom/", async(req, res) => {
+router.get("/api/receitaFrom", async(req, res) => {
   try{
     let obj = req.body;
     let idReceita = await idReceitaFromIngrediente(obj.nomeIngrediente);
@@ -165,7 +162,7 @@ router.get("/api/ingredientesReceita/:id?", async (req, res) => {
 
 async function getIdReceita(nomeReceita) {
   const response = await execSQL(
-    "SELECT * FROM KITCHNY.DBO.RECEITAS WHERE NOME = " + "'" + nomeReceita + "'"
+    "SELECT * FROM KITCHNY.DBO.RECEITAS WHERE NOME = '" + nomeReceita + "'"
   );
 
   return response.recordset[0].id;
