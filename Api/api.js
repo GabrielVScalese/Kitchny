@@ -64,13 +64,14 @@ router.get("/api/receita/:id?", async (req, res) => {
   try {
     let nomeReceita = req.params.id;
 
-    const receita = await getReceita(nomeReceita);
+    const receita = await execSQL ("SELECT * FROM KITCHNY.DBO.RECEITAS WHERE NOME LIKE '%" + nomeReceita + "%'");
 
-    if (receita == undefined)
+    if (receita.recordset.length == 0)
         return res.status(404).send({status: "Receita não encontrada!"});
     
-    return res.json(receita);
+    return res.json(receita.recordset);
   } catch (error) {
+	  console.log(error);
     return res.status(500).send({ status: "Erro na busca de uma receita!" });
   }
 });
@@ -93,20 +94,14 @@ async function getReceita (receita)
 }
 
 // Retorna receitas associadas aos ingredientes
-router.get("/api/receitasFromIngredientes", async (req, res) => {
+router.get("/api/receitasFromIngrediente/:id?", async (req, res) => {
   try {
-    let ingredientes = req.body.ingredientes;
-    let receitas = [];
+    let nomeIngrediente = req.params.id;
 
-    for (let i = 0; i < ingredientes.length; i++) {
-      let idReceita = await idReceitaFromIngrediente(ingredientes[i]);
-      let nomeReceita = await nomeReceitaFromIngrediente(idReceita);
-      receitas.push(nomeReceita);
-    }
+    let idReceita = await idReceitaFromIngrediente(nomeIngrediente);
+    let receita = await nomeReceitaFromIngrediente(idReceita);
 
-    let obj = { receitas };
-
-    return res.json(obj);
+    return res.json(receita);
   } catch (error) {
     return res.status(500).send({ status: "Erro na busca de receitas!" });
   }
@@ -114,7 +109,7 @@ router.get("/api/receitasFromIngredientes", async (req, res) => {
 
 async function nomeReceitaFromIngrediente(idReceita) {
   const response = await execSQL(
-    "SELECT NOME FROM KITCHNY.DBO.RECEITAS WHERE ID = " + idReceita
+    "SELECT * FROM KITCHNY.DBO.RECEITAS WHERE ID = " + idReceita
   );
 
   return response.recordset[0];
@@ -338,12 +333,11 @@ async function obterIngrediente(receita) {
       ingrediente: "",
       quantidade: "",
     };
-
+	
     var aux = await execSQL(
-      "SELECT ID FROM KITCHNY.DBO.RECEITAS WHERE NOME = " +
-        "'" +
+      "SELECT ID FROM KITCHNY.DBO.RECEITAS WHERE NOME LIKE '%" +
         receita.nome +
-        "'"
+        "%'"
     );
 
     obj.idReceita = aux.recordset[0].ID;

@@ -62,22 +62,22 @@ public class TelaInicial extends AppCompatActivity {
         });
     }
 
-    private void getReceita (String nomeReceita)
+    private void getReceita (final String nomeReceita)
     {
-        Call<Receita> call = new RetrofitConfig().getService().getReceita(nomeReceita);
-        call.enqueue(new Callback<Receita>() {
+        Call<List<Receita>> call = new RetrofitConfig().getService().getReceita(nomeReceita);
+        call.enqueue(new Callback<List<Receita>>() {
             @SuppressLint("SetTextI18n")
             @Override
-            public void onResponse(Response<Receita> response, Retrofit retrofit) {
+            public void onResponse(Response<List<Receita>> response, Retrofit retrofit) {
                 if(response.isSuccess()) {
                     List<Receita> listaReceita = new ArrayList<>();
-                    listaReceita.add(response.body());
+                    listaReceita = response.body();
                     ReceitaAdapter adapter = new ReceitaAdapter(TelaInicial.this, R.layout.receita_item, listaReceita);
                     listView.setAdapter(adapter);
                 }
                 else
                 {
-                    Toast.makeText(TelaInicial.this, "Receita não encontrada!", Toast.LENGTH_SHORT).show();
+                    getReceitasFromIngrediente(nomeReceita);
                 }
             }
 
@@ -104,6 +104,32 @@ public class TelaInicial extends AppCompatActivity {
                 else
                 {
                     Toast.makeText(TelaInicial.this, "Falha no carregamento das receitas", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Throwable t) {
+                Toast.makeText(TelaInicial.this, t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void getReceitasFromIngrediente (String nomeIngrediente)
+    {
+        Call<Receita> call = new RetrofitConfig().getService().getReceitasFromIngredientes(nomeIngrediente);
+        call.enqueue(new Callback<Receita>() {
+            @SuppressLint("SetTextI18n")
+            @Override
+            public void onResponse(Response<Receita> response, Retrofit retrofit) {
+                if(response.isSuccess()) {
+                    List<Receita> listaReceita = new ArrayList<>();
+                    listaReceita.add(response.body());
+                    ReceitaAdapter adapter = new ReceitaAdapter(TelaInicial.this, R.layout.receita_item, listaReceita);
+                    listView.setAdapter(adapter);
+                }
+                else
+                {
+                    Toast.makeText(TelaInicial.this, "Receita não encontrada!", Toast.LENGTH_SHORT).show();
                 }
             }
 

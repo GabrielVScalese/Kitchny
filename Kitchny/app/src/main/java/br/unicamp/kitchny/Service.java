@@ -26,11 +26,14 @@ public interface Service {
     Call<Usuario> getUsuario (@Path("email") String email);
 
     @GET("listaDeCompras/{email}")
-    Call<List<Compra>> getCestaDeCompras(@Path("email") String email);
+    Call<List<Compra>> getCestaDeCompras (@Path("email") String email);
 
     @GET("receitas")
     Call<List<Receita>> getReceitas();
 
     @GET("receita/{nomeReceita}")
-    Call<Receita> getReceita(@Path("nomeReceita") String nomeReceita);
+    Call<List<Receita>> getReceita (@Path("nomeReceita") String nomeReceita);
+
+    @GET("receitasFromIngrediente/{nomeIngrediente}")
+    Call<Receita> getReceitasFromIngredientes (@Path("nomeIngrediente") String nomeIngrediente);
 }
