@@ -31,9 +31,6 @@ public interface Service {
     @GET("receitas")
     Call<List<Receita>> getReceitas();
 
-    @GET("receita/{nomeReceita}")
-    Call<List<Receita>> getReceita (@Path("nomeReceita") String nomeReceita);
-
-    @GET("receitasFromIngrediente/{nomeIngrediente}")
-    Call<Receita> getReceitasFromIngredientes (@Path("nomeIngrediente") String nomeIngrediente);
+    @GET("receitaFrom/{pesquisa}")
+    Call<List<Receita>> getReceita (@Path("pesquisa") String pesquisa);
 }

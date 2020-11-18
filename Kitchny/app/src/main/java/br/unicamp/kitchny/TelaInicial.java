@@ -62,32 +62,6 @@ public class TelaInicial extends AppCompatActivity {
         });
     }
 
-    private void getReceita (final String nomeReceita)
-    {
-        Call<List<Receita>> call = new RetrofitConfig().getService().getReceita(nomeReceita);
-        call.enqueue(new Callback<List<Receita>>() {
-            @SuppressLint("SetTextI18n")
-            @Override
-            public void onResponse(Response<List<Receita>> response, Retrofit retrofit) {
-                if(response.isSuccess()) {
-                    List<Receita> listaReceita = new ArrayList<>();
-                    listaReceita = response.body();
-                    ReceitaAdapter adapter = new ReceitaAdapter(TelaInicial.this, R.layout.receita_item, listaReceita);
-                    listView.setAdapter(adapter);
-                }
-                else
-                {
-                    getReceitasFromIngrediente(nomeReceita);
-                }
-            }
-
-            @Override
-            public void onFailure(Throwable t) {
-                Toast.makeText(TelaInicial.this, t.getMessage(), Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
-
     private void getListaReceitas()
     {
         Call<List<Receita>> call = new RetrofitConfig().getService().getReceitas();
@@ -114,16 +88,16 @@ public class TelaInicial extends AppCompatActivity {
         });
     }
 
-    private void getReceitasFromIngrediente (String nomeIngrediente)
+    private void getReceita (String pesquisa)
     {
-        Call<Receita> call = new RetrofitConfig().getService().getReceitasFromIngredientes(nomeIngrediente);
-        call.enqueue(new Callback<Receita>() {
+        Call<List<Receita>> call = new RetrofitConfig().getService().getReceita(pesquisa);
+        call.enqueue(new Callback<List<Receita>>() {
             @SuppressLint("SetTextI18n")
             @Override
-            public void onResponse(Response<Receita> response, Retrofit retrofit) {
+            public void onResponse(Response<List<Receita>> response, Retrofit retrofit) {
                 if(response.isSuccess()) {
                     List<Receita> listaReceita = new ArrayList<>();
-                    listaReceita.add(response.body());
+                    listaReceita = response.body();
                     ReceitaAdapter adapter = new ReceitaAdapter(TelaInicial.this, R.layout.receita_item, listaReceita);
                     listView.setAdapter(adapter);
                 }
