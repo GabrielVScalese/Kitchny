@@ -13,16 +13,19 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import br.unicamp.kitchny.kotlin.Compra;
+import br.unicamp.kitchny.kotlin.Ingrediente;
 
-public class IngredienteAdapter extends IngredienteAdapter<Ingrediente> {
+public class IngredienteAdapter extends ArrayAdapter<Ingrediente> {
 
     private Context context;
     private int layoutResourceId;
     private List<Ingrediente> dados;
 
-    public IngredienteAdapter (@NonNull Context context, int resource, @NonNull List<Compra> dados) {
+    public IngredienteAdapter (@NonNull Context context, int resource, @NonNull List<Ingrediente> dados) {
         super(context, resource, dados);
 
         this.context = context;
@@ -44,7 +47,14 @@ public class IngredienteAdapter extends IngredienteAdapter<Ingrediente> {
         TextView tvIngrediente = view.findViewById(R.id.tvIngrediente);
 
         Ingrediente ingrediente = dados.get(position);
-        tvIngrediente.setText(ingrediente.getNomeIngrediente());
+
+        Pattern p = Pattern.compile( "[0-9]" );
+        Matcher m = p.matcher(ingrediente.getQuantidade());
+
+        if (m.find())
+            tvIngrediente.setText(ingrediente.getQuantidade() + " de " + ingrediente.getNomeIngrediente());
+        else
+            tvIngrediente.setText(ingrediente.getNomeIngrediente() + " " + ingrediente.getQuantidade());
 
         return view;
     }

@@ -90,7 +90,7 @@ public class TelaInicial extends AppCompatActivity {
 
     private void getReceita (String pesquisa)
     {
-        Call<List<Receita>> call = new RetrofitConfig().getService().getReceita(pesquisa);
+        Call<List<Receita>> call = new RetrofitConfig().getService().getReceitaFromPesquisa(pesquisa);
         call.enqueue(new Callback<List<Receita>>() {
             @SuppressLint("SetTextI18n")
             @Override

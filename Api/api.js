@@ -64,12 +64,14 @@ router.get("/api/receita/:id?", async (req, res) => {
   try {
     let nomeReceita = req.params.id;
 
-    const receita = await execSQL ("SELECT * FROM KITCHNY.DBO.RECEITAS WHERE NOME LIKE '%" + nomeReceita + "%'");
+    const receita = await getReceita(nomeReceita);
 
-    if (receita.recordset.length == 0)
+    if (receita == undefined)
         return res.status(404).send({status: "Receita não encontrada!"});
     
-    return res.json(receita.recordset);
+	let objReceita = {nome: receita.nome, rendimento: receita.rendimento, modoDePreparo: receita.modoDePreparo, imagem: receita.imagem, avaliacao: receita.avaliacao}
+	
+    return res.json(objReceita);
   } catch (error) {
 	  console.log(error);
     return res.status(500).send({ status: "Erro na busca de uma receita!" });
