@@ -76,13 +76,10 @@ router.get("/api/receita/:id?", async (req, res) => {
   }
 });
 
-async function getReceitaFromNomeReceita (nomeReceita)
+async function getReceita (receita)
 {
   const response = await execSQL(
-    "SELECT * FROM KITCHNY.DBO.RECEITAS WHERE NOME LIKE " +
-      "'%" +
-      nomeReceita +
-      "%'"
+    "SELECT * FROM KITCHNY.DBO.RECEITAS WHERE NOME LIKE '%" + receita + "%'"
   );
   
   if (response.rowsAffected == 0)
@@ -107,7 +104,7 @@ router.get("/api/receitasFromIngrediente/:id?", async (req, res) => {
   }
 });
 
-async function receitaFromIdReceita(idReceita) {
+async function receitaFromIngrediente(idReceita) {
   const response = await execSQL(
     "SELECT * FROM KITCHNY.DBO.RECEITAS WHERE ID = " + idReceita
   );
@@ -115,26 +112,17 @@ async function receitaFromIdReceita(idReceita) {
   return response.recordset[0];
 }
 
-// Retorna as receitas
-router.get("/api/receitasFrom/:pesquisa", async(req, res) => {
+// Rota nova
+router.get("/api/receitaFrom", async(req, res) => {
   try{
-    let pesquisa = req.params.pesquisa;
-    let idReceita = await idReceitaFromIngrediente(pesquisa);
-    if(idReceita != undefined)
-      var receita1 = await receitaFromIdReceita(idReceita);
-    else
-      var receita1 = undefined;
-
-    let receita2 = await getReceitaFromNomeReceita(pesquisa);
-
-    console.log(receita1);
-    console.log(receita2);
+    let obj = req.body;
+    let idReceita = await idReceitaFromIngrediente(obj.nomeIngrediente);
+    let receita1 = await receitaFromIngrediente(idReceita);
+    let receita2 = await getReceita(obj.nomeReceita);
 
     let receitas = [];
-    if(receita1 != undefined)
-      receitas.push(receita1);
-    if(receita2 != undefined)
-      receitas.push(receita2);
+    receitas.push(receita1);
+    receitas.push(receita2);
 
     return res.json(receitas);
   }
@@ -151,10 +139,7 @@ async function idReceitaFromIngrediente(ingrediente) {
       ingrediente +
       "%'"
   );
-  
-  if(response.recordset.length == 0)
-    return undefined;
-  console.log("galeso")
+
   return response.recordset[0].RECEITA;
 }
 
@@ -166,8 +151,16 @@ router.get("/api/ingredientesReceita/:id?", async (req, res) => {
     const response = await execSQL(
       "SELECT * FROM KITCHNY.DBO.INGREDIENTES WHERE RECEITA = " + id
     );
-
-    return res.json(response.recordset);
+	
+	let ingredientes = []
+	
+	for (let i = 0; i < response.recordset.length; i++)
+	{
+		let obj = {nomeIngrediente: response.recordset[i].nome, quantidade: response.recordset[i].quantidade}
+		ingredientes.push(obj)
+	}
+	
+    return res.json(ingredientes);
   } catch (error) {
     return res
       .status(500)
@@ -177,7 +170,7 @@ router.get("/api/ingredientesReceita/:id?", async (req, res) => {
 
 async function getIdReceita(nomeReceita) {
   const response = await execSQL(
-    "SELECT * FROM KITCHNY.DBO.RECEITAS WHERE NOME = " + "'" + nomeReceita + "'"
+    "SELECT * FROM KITCHNY.DBO.RECEITAS WHERE NOME LIKE '%" + nomeReceita + "%'"
   );
 
   return response.recordset[0].id;
@@ -270,7 +263,7 @@ router.delete("/api/deleteReceita/:id?", async (req, res) => {
   try {
     let nomeReceita = req.params.id;
 
-    if (await getReceitaFromNomeReceita(nomeReceita) == undefined)
+    if (await getReceita(nomeReceita) == undefined)
         return res.status(404).send({status: "Receita inexistente!"});
 
     console.log("a");
