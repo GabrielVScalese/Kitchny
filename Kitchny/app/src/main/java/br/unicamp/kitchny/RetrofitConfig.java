@@ -3,7 +3,9 @@ package br.unicamp.kitchny;
 import retrofit.GsonConverterFactory;
 import retrofit.Retrofit;
 
+// Configuração de url base e execução de requisições
 public class RetrofitConfig {
+
     private Retrofit retrofit;
 
     public RetrofitConfig ()

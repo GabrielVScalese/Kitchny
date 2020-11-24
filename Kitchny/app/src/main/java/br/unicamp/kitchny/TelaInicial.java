@@ -16,16 +16,16 @@ import java.util.List;
 
 import br.unicamp.kitchny.kotlin.Compra;
 import br.unicamp.kitchny.kotlin.Receita;
-import kotlin.collections.builders.ListBuilder;
 import retrofit.Call;
 import retrofit.Callback;
 import retrofit.Response;
 import retrofit.Retrofit;
 
+// Janela de exibição de lista de receitas
 public class TelaInicial extends AppCompatActivity {
 
-    ListView listView;
-    EditText edtNomeReceita;
+    private ListView listView;
+    private EditText edtNomeReceita;
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
@@ -41,10 +41,7 @@ public class TelaInicial extends AppCompatActivity {
             @SuppressLint("ClickableViewAccessibility")
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                final int DRAWABLE_LEFT = 0;
-                final int DRAWABLE_TOP = 1;
                 final int DRAWABLE_RIGHT = 2;
-                @SuppressLint("ClickableViewAccessibility") final int DRAWABLE_BOTTOM = 3;
 
                 if(event.getAction() == MotionEvent.ACTION_UP) {
                     if(event.getRawX() >= (edtNomeReceita.getRight() - edtNomeReceita.getCompoundDrawables()[DRAWABLE_RIGHT].getBounds().width())) {
@@ -57,6 +54,7 @@ public class TelaInicial extends AppCompatActivity {
                         return true;
                     }
                 }
+
                 return false;
             }
         });

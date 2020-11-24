@@ -9,14 +9,8 @@ import br.unicamp.kitchny.kotlin.Usuario;
 import retrofit.Call;
 import retrofit.http.*;
 
+// Definição de requisições
 public interface Service {
-
-    /*@GET("get")
-    Call<List<Receitas>> getAll ();*/
-
-    /*@GET("getNome/{nome}")
-    Call<Produto> getNome (@Path("nome") String nome);*/
-
     @POST("autenticateUsuario")
     Call<Status> autenticarUsuario (@Body Usuario usuario);
 

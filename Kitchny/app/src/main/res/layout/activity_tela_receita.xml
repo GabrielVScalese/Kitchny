@@ -39,6 +39,7 @@
         >
 
         <ImageView
+            android:id="@+id/star1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/ic_baseline_star_border_24"
@@ -47,6 +48,7 @@
             />
 
         <ImageView
+            android:id="@+id/star2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/ic_baseline_star_border_24"
@@ -55,6 +57,7 @@
             />
 
         <ImageView
+            android:id="@+id/star3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/ic_baseline_star_border_24"
@@ -63,6 +66,7 @@
             />
 
         <ImageView
+            android:id="@+id/star4"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/ic_baseline_star_border_24"
@@ -71,6 +75,7 @@
             />
 
         <ImageView
+            android:id="@+id/star5"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/ic_baseline_star_border_24"
@@ -137,6 +142,8 @@
             android:text=""
             android:layout_marginTop="20dp"
             android:layout_gravity="center"
+            android:paddingLeft="10dp"
+            android:textSize="15sp"
             />
 
     </LinearLayout>
@@ -159,6 +166,7 @@
         >
 
         <ImageView
+            android:id="@+id/aval1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/ic_baseline_star_border_24"
@@ -167,6 +175,7 @@
             />
 
         <ImageView
+            android:id="@+id/aval2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/ic_baseline_star_border_24"
@@ -175,6 +184,7 @@
             />
 
         <ImageView
+            android:id="@+id/aval3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/ic_baseline_star_border_24"
@@ -183,6 +193,7 @@
             />
 
         <ImageView
+            android:id="@+id/aval4"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/ic_baseline_star_border_24"
@@ -191,6 +202,7 @@
             />
 
         <ImageView
+            android:id="@+id/aval5"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/ic_baseline_star_border_24"

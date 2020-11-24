@@ -25,10 +25,10 @@ import java.util.List;
 
 import br.unicamp.kitchny.kotlin.Receita;
 
+// Adapter utilizado para a lista de receitas
 public class ReceitaAdapter extends ArrayAdapter<Receita> {
 
-    private Bitmap imagemReceita;
-    ImageView imagem;
+    private ImageView imagemReceita;
     private Context context;
     private int layoutResourceId;
     private List<Receita> dados;
@@ -53,13 +53,12 @@ public class ReceitaAdapter extends ArrayAdapter<Receita> {
             view = layoutinflater.inflate(layoutResourceId, parent, false);
         }
 
-
         TextView nomeReceita = view.findViewById(R.id.txtNomeReceita);
-        imagem = view.findViewById(R.id.ImgImagem);
+        imagemReceita = view.findViewById(R.id.ImgImagem);
 
         Receita receita = dados.get(position);
 
-        if (receita.getImagem() != null && !receita.getImagem().equals(""))
+        if (!receita.getImagem().equals(""))
         {
             urlDefault = receita.getImagem();
             DownloadImageTask dt = new DownloadImageTask();
@@ -76,22 +75,29 @@ public class ReceitaAdapter extends ArrayAdapter<Receita> {
         return view;
     }
 
-    private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
-        protected Bitmap doInBackground(String... urls) {
+    @SuppressLint("StaticFieldLeak")
+    private class DownloadImageTask extends AsyncTask<String, Void, Bitmap>
+    {
+        protected Bitmap doInBackground(String... urls)
+        {
             String urldisplay = urls[0];
             Bitmap mIcon11 = null;
-            try {
+            try
+            {
                 InputStream in = new java.net.URL(urldisplay).openStream();
                 mIcon11 = BitmapFactory.decodeStream(in);
-            } catch (Exception e) {
+            }
+            catch (Exception e)
+            {
                 Log.e("Error", e.getMessage());
                 e.printStackTrace();
             }
+
             return mIcon11;
         }
 
         protected void onPostExecute(Bitmap result) {
-            imagem.setImageBitmap(Bitmap.createScaledBitmap(result, 300, 150, false));
+            imagemReceita.setImageBitmap(Bitmap.createScaledBitmap(result, 300, 150, false));
         }
     }
 }

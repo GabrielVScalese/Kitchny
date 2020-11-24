@@ -19,11 +19,13 @@ import java.util.regex.Pattern;
 import br.unicamp.kitchny.kotlin.Compra;
 import br.unicamp.kitchny.kotlin.Ingrediente;
 
+// Adapter utilizado para a lista de ingredientes de uma receita
 public class IngredienteAdapter extends ArrayAdapter<Ingrediente> {
 
     private Context context;
     private int layoutResourceId;
     private List<Ingrediente> dados;
+    private ImageView imagem;
 
     public IngredienteAdapter (@NonNull Context context, int resource, @NonNull List<Ingrediente> dados) {
         super(context, resource, dados);
@@ -45,6 +47,7 @@ public class IngredienteAdapter extends ArrayAdapter<Ingrediente> {
         }
 
         TextView tvIngrediente = view.findViewById(R.id.tvIngrediente);
+        imagem = view.findViewById(R.id.imgReceita);
 
         Ingrediente ingrediente = dados.get(position);
 

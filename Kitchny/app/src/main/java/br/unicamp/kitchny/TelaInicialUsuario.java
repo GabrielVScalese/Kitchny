@@ -18,16 +18,15 @@ import retrofit.Callback;
 import retrofit.Response;
 import retrofit.Retrofit;
 
+// Janela de dados do usuário
 public class TelaInicialUsuario extends AppCompatActivity {
 
-    TextView tvNomeUsuario;
-    TextView tvEmailUsuario;
-    TextView tvAprovacao;
-    TextView tvReprovacao;
-    TextView tvReceitas;
-    TextView tvMedia;
-
-
+    private TextView tvNomeUsuario;
+    private  TextView tvEmailUsuario;
+    private TextView tvAprovacao;
+    private TextView tvReprovacao;
+    private TextView tvReceitas;
+    private TextView tvMedia;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

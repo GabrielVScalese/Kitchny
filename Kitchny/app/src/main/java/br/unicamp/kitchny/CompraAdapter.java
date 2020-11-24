@@ -16,6 +16,7 @@ import java.util.List;
 
 import br.unicamp.kitchny.kotlin.Compra;
 
+// Adapter utilizado para a lista de compras
 public class CompraAdapter extends ArrayAdapter<Compra> {
 
     private Context context;
@@ -47,7 +48,6 @@ public class CompraAdapter extends ArrayAdapter<Compra> {
         Compra compra = dados.get(position);
         ingrediente.setText("" + compra.getNomeIngrediente());
         qtd.setText("x " + compra.getQuantidade());
-
 
         return view;
     }

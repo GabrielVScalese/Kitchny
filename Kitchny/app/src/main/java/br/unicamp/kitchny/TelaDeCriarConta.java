@@ -22,14 +22,15 @@ import retrofit.Retrofit;
 
 import java.util.UUID;
 
+// Janela de cadastro do usuário
 public class TelaDeCriarConta extends AppCompatActivity {
 
-    EditText etNome;
-    EditText etEmail;
-    EditText etSenha;
-    EditText etConfirmarSenha;
-    Button btnCriar;
-    Usuario usuario;
+    private EditText etNome;
+    private EditText etEmail;
+    private EditText etSenha;
+    private EditText etConfirmarSenha;
+    private Button btnCriar;
+    private Usuario usuario;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,7 +85,7 @@ public class TelaDeCriarConta extends AppCompatActivity {
 
             @Override
             public void onFailure(Throwable t) {
-                Toast.makeText(TelaDeCriarConta.this, "Falha obtenção de dados do usuários", Toast.LENGTH_SHORT).show();
+                Toast.makeText(TelaDeCriarConta.this, "Falha no cadastro de usuário", Toast.LENGTH_SHORT).show();
             }
         });
     }

@@ -32,30 +32,19 @@ import retrofit.Callback;
 import retrofit.Response;
 import retrofit.Retrofit;
 
-
+// Janela de lista de compras do usuário
 public class TelaInicialCesta extends AppCompatActivity {
 
-    ListView listView;
-    TextView tvTitulo;
-    TextView txtTitulo;
-
-
+    private ListView listView;
+    private TextView tvTitulo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tela_inicial_cesta);
 
-
         listView = findViewById(R.id.listaCompras);
         tvTitulo = findViewById(R.id.tvTitulo);
-
-        final LayoutInflater factory = getLayoutInflater();
-
-        final View textEntryView = factory.inflate(R.layout.layout_dialog, null);
-
-        txtTitulo = textEntryView.findViewById(R.id.txtTitulo);
-
 
         getListaDeCompras("gabriel.scalese@hotmail.com");
 
@@ -95,10 +84,8 @@ public class TelaInicialCesta extends AppCompatActivity {
     }
 
     private void showEditDialog(String titulo) {
-        txtTitulo.setText(titulo);
         FragmentManager fm = getSupportFragmentManager();
         Dialog editNameDialogFragment = Dialog.newInstance(titulo);
         editNameDialogFragment.show(fm, "layout_dialog");
-
     }
 }

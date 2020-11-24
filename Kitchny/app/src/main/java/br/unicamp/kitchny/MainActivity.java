@@ -20,20 +20,19 @@ import retrofit.Callback;
 import retrofit.Response;
 import retrofit.Retrofit;
 
+// Janela de login
 public class MainActivity extends AppCompatActivity {
 
-    Button btnCriarConta;
-    Button btnEntrar;
-    EditText etEmail;
-    EditText etSenha;
-    Usuario usuario;
-    boolean response = false;
+    private Button btnCriarConta;
+    private Button btnEntrar;
+    private EditText etEmail;
+    private EditText etSenha;
+    private Usuario usuario;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
 
         etEmail = findViewById(R.id.etEmailLogin);
         etSenha = findViewById(R.id.etSenhaLogin);
