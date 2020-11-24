@@ -29,7 +29,7 @@ public interface Service {
     @GET("receita/{nomeReceita}")
     Call<Receita> getReceita (@Path("nomeReceita") String nomeReceita);
 
-    @GET("receitaFrom/{pesquisa}")
+    @GET("receitaFromPesquisa/{pesquisa}")
     Call<List<Receita>> getReceitaFromPesquisa (@Path("pesquisa") String pesquisa);
 
     @GET("ingredientesReceita/{nomeReceita}")

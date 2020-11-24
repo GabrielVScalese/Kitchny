@@ -44,8 +44,8 @@ router.get("/", (req, res) => {
 router.get("/api/receitas", async (req, res) => {
   try {
     let response = await execSQL("SELECT * FROM KITCHNY.DBO.RECEITAS");
-
     let receitas = [];
+
     for(let i = 0; i < response.recordset.length; i++)
     {
       let receita = {nome: response.recordset[i].nome, rendimento: response.recordset[i].rendimento, modoDePreparo: response.recordset[i].modoDePreparo,
@@ -53,6 +53,7 @@ router.get("/api/receitas", async (req, res) => {
 
       receitas.push(receita);
     }
+
     return res.json(receitas);
   } catch (error) {
     return res.status(500).send({ status: "Erro na busca de receitas!" });
@@ -64,9 +65,9 @@ router.get("/api/receita/:id?", async (req, res) => {
   try {
     let nomeReceita = req.params.id;
 
-    const receita = await getReceita(nomeReceita);
+    const receita = await getReceitaFromNomeReceita(nomeReceita);
 
-    if (receita == undefined)
+    if (receita === undefined)
         return res.status(404).send({status: "Receita não encontrada!"});
     
 	let objReceita = {nome: receita.nome, rendimento: receita.rendimento, modoDePreparo: receita.modoDePreparo, imagem: receita.imagem, avaliacao: receita.avaliacao}
@@ -78,7 +79,7 @@ router.get("/api/receita/:id?", async (req, res) => {
   }
 });
 
-async function getReceita (receita)
+async function getReceitaFromNomeReceita (receita)
 {
   const response = await execSQL(
     "SELECT * FROM KITCHNY.DBO.RECEITAS WHERE NOME LIKE '%" + receita + "%'"
@@ -97,7 +98,7 @@ router.get("/api/receitasFromIngrediente/:id?", async (req, res) => {
   try {
     let nomeIngrediente = req.params.id;
 
-    let idReceita = await idReceitaFromIngrediente(nomeIngrediente);
+    let idReceita = await getIdReceitaFromIngrediente(nomeIngrediente);
     let receita = await nomeReceitaFromIngrediente(idReceita);
 
     return res.json(receita);
@@ -106,7 +107,7 @@ router.get("/api/receitasFromIngrediente/:id?", async (req, res) => {
   }
 });
 
-async function receitaFromIngrediente(idReceita) {
+async function getReceitaFromIngrediente(idReceita) {
   const response = await execSQL(
     "SELECT * FROM KITCHNY.DBO.RECEITAS WHERE ID = " + idReceita
   );
@@ -115,12 +116,12 @@ async function receitaFromIngrediente(idReceita) {
 }
 
 // Rota nova
-router.get("/api/receitaFrom", async(req, res) => {
+router.get("/api/receitaFromPesquisa", async(req, res) => {
   try{
     let obj = req.body;
-    let idReceita = await idReceitaFromIngrediente(obj.nomeIngrediente);
-    let receita1 = await receitaFromIngrediente(idReceita);
-    let receita2 = await getReceita(obj.nomeReceita);
+    let idReceita = await getIdReceitaFromIngrediente(obj.nomeIngrediente);
+    let receita1 = await getReceitaFromIngrediente(idReceita);
+    let receita2 = await getReceitaFromNomeReceita(obj.nomeReceita);
 
     let receitas = [];
     receitas.push(receita1);
@@ -134,7 +135,7 @@ router.get("/api/receitaFrom", async(req, res) => {
 })
 
 // Retorna o idDaReceita
-async function idReceitaFromIngrediente(ingrediente) {
+async function getIdReceitaFromIngrediente(ingrediente) {
   const response = await execSQL(
     "SELECT RECEITA FROM KITCHNY.DBO.INGREDIENTES WHERE NOME LIKE " +
       "'%" +
@@ -170,7 +171,7 @@ router.get("/api/ingredientesReceita/:id?", async (req, res) => {
   }
 });
 
-async function getIdReceita(nomeReceita) {
+async function getIdReceitaFromIngrediente(nomeReceita) {
   const response = await execSQL(
     "SELECT * FROM KITCHNY.DBO.RECEITAS WHERE NOME LIKE '%" + nomeReceita + "%'"
   );
@@ -598,6 +599,5 @@ router.post("/api/insertListaDeCompras", async (req, res) => {
       .send({ status: "Erro na inclusão de lista de compras!" });
   }
 });
-
 
 app.use(router);
