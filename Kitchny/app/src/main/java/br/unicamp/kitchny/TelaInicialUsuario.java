@@ -33,8 +33,6 @@ public class TelaInicialUsuario extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tela_inicial_usuario);
 
-
-
         tvNomeUsuario = findViewById(R.id.tvNomeUsuario);
         tvEmailUsuario = findViewById(R.id.tvEmailUsuario);
         tvAprovacao = findViewById(R.id.tvAprovacao);
@@ -53,7 +51,6 @@ public class TelaInicialUsuario extends AppCompatActivity {
             public void onResponse(Response<Usuario> response, Retrofit retrofit) {
                 if (response.isSuccess())
                 {
-                    System.out.println("a");
                     Usuario usuario = response.body();
                     tvNomeUsuario.setText(usuario.getNome());
                     tvEmailUsuario.setText(usuario.getEmail());
@@ -76,7 +73,7 @@ public class TelaInicialUsuario extends AppCompatActivity {
 
             @Override
             public void onFailure(Throwable t) {
-                Toast.makeText(TelaInicialUsuario.this, "Falha obtenção de dados do usuários", Toast.LENGTH_SHORT).show();
+                Toast.makeText(TelaInicialUsuario.this, "Falha na obtenção de dados do usuário", Toast.LENGTH_SHORT).show();
             }
         });
     }

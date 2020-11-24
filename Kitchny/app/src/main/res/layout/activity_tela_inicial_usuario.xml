@@ -10,7 +10,7 @@
    <ImageView
        android:layout_width="120dp"
        android:layout_height="120dp"
-       android:background="@drawable/ic_baseline_account_circle_24"
+       android:background="@drawable/circle_user"
        android:layout_gravity="center"
        android:layout_marginTop="40dp"
        />
@@ -29,17 +29,16 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:gravity="center"
-        >
+        android:gravity="center">
 
         <ImageView
-            android:background="@drawable/ic_baseline_email_24"
+            android:background="@drawable/baseline_email"
             android:layout_height="30dp"
             android:layout_width="30dp"
             android:layout_marginRight="10dp"
             android:layout_marginBottom="10dp"
-
             />
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="30dp"
@@ -47,8 +46,8 @@
             android:layout_gravity="center"
             android:layout_marginBottom="10dp"
             android:id="@+id/tvEmailUsuario"
-
             />
+
     </LinearLayout>
 
     <Button
@@ -65,11 +64,10 @@
        android:layout_width="match_parent"
        android:layout_height="wrap_content"
        android:orientation="horizontal"
-       android:gravity="center"
-       >
+       android:gravity="center">
 
        <ImageView
-           android:background="@drawable/ic_baseline_sentiment_satisfied_alt_24"
+           android:background="@drawable/baseline_sentiment_satisfied"
            android:layout_height="30dp"
            android:layout_width="30dp"
            android:layout_marginRight="10dp"
@@ -83,20 +81,18 @@
        android:textSize="16sp"
        android:layout_marginBottom="5dp"
        android:id="@+id/tvAprovacao"
-
        />
-    </LinearLayout>
 
+    </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:gravity="center"
-        >
+        android:gravity="center">
 
         <ImageView
-            android:background="@drawable/ic_baseline_sentiment_very_dissatisfied_24"
+            android:background="@drawable/baseline_sentiment_very_dissatisfied"
             android:layout_height="30dp"
             android:layout_width="30dp"
             android:layout_marginRight="10dp"
@@ -114,16 +110,14 @@
 
     </LinearLayout>
 
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:gravity="center"
-        >
+        android:gravity="center">
 
         <ImageView
-            android:background="@drawable/ic_baseline_add_circle_24"
+            android:background="@drawable/circle_add"
             android:layout_height="30dp"
             android:layout_width="30dp"
             android:layout_marginRight="10dp"
@@ -138,17 +132,17 @@
         android:layout_marginBottom="5dp"
         android:id="@+id/tvMedia"
         />
+
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:gravity="center"
-        >
+        android:gravity="center">
 
         <ImageView
-            android:background="@drawable/ic_baseline_call_made_24"
+            android:background="@drawable/call_made"
             android:layout_height="30dp"
             android:layout_width="30dp"
             android:layout_marginRight="10dp"
@@ -161,12 +155,12 @@
         android:layout_gravity="center"
         android:id="@+id/tvReceitas"
         />
+
     </LinearLayout>
 
     <RelativeLayout
         android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        >
+        android:layout_height="match_parent">
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottom_navigation"

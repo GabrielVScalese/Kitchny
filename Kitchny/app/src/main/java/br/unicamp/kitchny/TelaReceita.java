@@ -17,7 +17,6 @@ import android.widget.Toast;
 import java.io.InputStream;
 import java.util.List;
 
-import br.unicamp.kitchny.kotlin.Compra;
 import br.unicamp.kitchny.kotlin.Ingrediente;
 import br.unicamp.kitchny.kotlin.Receita;
 import retrofit.Call;
@@ -25,6 +24,7 @@ import retrofit.Callback;
 import retrofit.Response;
 import retrofit.Retrofit;
 
+// Janela de uma determinada receita
 public class TelaReceita extends AppCompatActivity {
 
     private TextView tvTituloReceita;
@@ -51,7 +51,6 @@ public class TelaReceita extends AppCompatActivity {
 
     // Vetor de estrelas para avaliacao
     private ImageView[] vetorDeAval;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -141,7 +140,7 @@ public class TelaReceita extends AppCompatActivity {
             @Override
             public void onResponse(Response<List<Ingrediente>> response, Retrofit retrofit) {
                 if(response.isSuccess()) {
-                    List<Ingrediente> listaIngredientes = null;
+                    List<Ingrediente> listaIngredientes;
                     listaIngredientes = response.body();
                     IngredienteAdapter adapter = new IngredienteAdapter(TelaReceita.this, R.layout.ingrediente_item, listaIngredientes);
                     listViewIngredientes.setAdapter(adapter);
@@ -167,16 +166,14 @@ public class TelaReceita extends AppCompatActivity {
             @Override
             public void onResponse(Response<Receita> response, Retrofit retrofit) {
                 if(response.isSuccess()) {
-                    Receita receita = null;
+                    Receita receita;
                     receita = response.body();
                     tvTituloReceita.setText(receita.getNome());
                     tvModoDePreparo.setText(receita.getModoDePreparo());
                     setNotaReceita(receita.getAvaliacao());
                 }
                 else
-                {
                     Toast.makeText(TelaReceita.this, "Falha na busca de receita", Toast.LENGTH_SHORT).show();
-                }
             }
 
             @Override
@@ -191,19 +188,20 @@ public class TelaReceita extends AppCompatActivity {
         int conversao = (int) nota / 2;
 
         for (int i = 0; i < conversao; i++)
-            vetorDeEstrelas[i].setImageResource(R.drawable.ic_baseline_star_24);
+            vetorDeEstrelas[i].setImageResource(R.drawable.baseline_star_24);
     }
 
     private void setAvalicaoReceita (int qtdAval)
     {
         for (int i = 0; i < vetorDeAval.length; i++)
-             vetorDeAval[i].setImageResource(R.drawable.ic_baseline_star_border_24);
+             vetorDeAval[i].setImageResource(R.drawable.baseline_star_border);
 
         for (int i = 0; i < qtdAval; i++)
-            vetorDeAval[i].setImageResource(R.drawable.ic_baseline_star_24);
+            vetorDeAval[i].setImageResource(R.drawable.baseline_star_24);
     }
 
     private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
+
         protected Bitmap doInBackground(String... urls) {
             String urldisplay = urls[0];
             Bitmap mIcon11 = null;

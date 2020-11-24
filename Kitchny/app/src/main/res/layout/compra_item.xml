@@ -2,37 +2,38 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="horizontal"
-    >
-            <TextView
-                android:id="@+id/txtIngrediente"
-                android:layout_width="150dp"
-                android:layout_height="wrap_content"
-                android:textSize="16sp"
-                android:textColor="#363636"
-                android:layout_marginRight="0dp"
-                android:layout_marginLeft="20dp"
-                android:text="ingrediente"
-                android:layout_gravity="center"
-                />
+    android:orientation="horizontal">
 
-            <TextView
-                android:id="@+id/txtQtd"
-                android:layout_width="50dp"
-                android:layout_height="wrap_content"
+    <TextView
+        android:id="@+id/txtIngrediente"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:textSize="16sp"
+        android:textColor="#363636"
+        android:layout_marginRight="0dp"
+        android:layout_marginLeft="20dp"
+        android:text="ingrediente"
+        android:layout_gravity="center"
+        />
 
-                android:textSize="16sp"
-                android:textColor="#363636"
-                android:text="qtd"
-                android:layout_marginRight="45dp"
-                android:layout_gravity="center"
-                />
+    <TextView
+        android:id="@+id/txtQtd"
+        android:layout_width="50dp"
+        android:layout_height="wrap_content"
 
-            <ImageView
-                android:id="@+id/btnClear"
-                android:layout_width="35dp"
-                android:layout_height="35dp"
-                android:background="@drawable/ic_baseline_clear_24"
-                android:layout_gravity="center"
-                />
+        android:textSize="16sp"
+        android:textColor="#363636"
+        android:text="qtd"
+        android:layout_marginRight="45dp"
+        android:layout_gravity="center"
+        />
+
+    <ImageView
+        android:id="@+id/btnClear"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:background="@drawable/clear"
+        android:layout_gravity="center"
+        />
+
 </LinearLayout>

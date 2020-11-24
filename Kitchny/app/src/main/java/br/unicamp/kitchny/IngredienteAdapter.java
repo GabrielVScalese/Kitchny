@@ -51,7 +51,7 @@ public class IngredienteAdapter extends ArrayAdapter<Ingrediente> {
 
         Ingrediente ingrediente = dados.get(position);
 
-        Pattern p = Pattern.compile( "[0-9]" );
+        Pattern p = Pattern.compile("[0-9]");
         Matcher m = p.matcher(ingrediente.getQuantidade());
 
         if (m.find())
