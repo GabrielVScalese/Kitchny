@@ -63,6 +63,7 @@ class Receita (nome: String, rendimento: String, modoDePreparo: String, imagem: 
 
     constructor(nome: String) : this(nome, "", "", "", 0.0F)
     constructor(receita: Receita) : this(receita.nome, receita.rendimento, receita.modoDePreparo, receita.imagem, receita.avaliacao)
+    constructor(nome: String, avaliacao: Float) : this(nome, "", "", "", avaliacao)
 
     override fun equals(other: Any?): Boolean
     {

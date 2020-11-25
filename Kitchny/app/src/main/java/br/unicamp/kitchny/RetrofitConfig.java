@@ -11,11 +11,11 @@ public class RetrofitConfig {
     public RetrofitConfig ()
     {
         // Scalese
-        this.retrofit = new Retrofit.Builder().baseUrl("http://192.168.0.28:3000/api/").
-                addConverterFactory(GsonConverterFactory.create()).build();
+        /*this.retrofit = new Retrofit.Builder().baseUrl("http://192.168.0.28:3000/api/").
+                addConverterFactory(GsonConverterFactory.create()).build();*/
         // Felis
-        /*this.retrofit = new Retrofit.Builder().baseUrl("http://192.168.6.1:3000/api/").
-            addConverterFactory(GsonConverterFactory.create()).build();*/
+        this.retrofit = new Retrofit.Builder().baseUrl("http://192.168.6.1:3000/api/").
+            addConverterFactory(GsonConverterFactory.create()).build();
     }
 
     public Service getService ()

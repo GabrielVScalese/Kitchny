@@ -131,7 +131,7 @@ async function getIdReceitaFromNomeIngrediente (nomeIngrediente)
   if (response.recordset.length === 0)
       return undefined
 
-  return response.recordset[0].RECEITA
+  return response.recordset[0].RECEITA;
 }
 
 async function getReceitaFromIdReceita (idReceita)
@@ -141,11 +141,21 @@ async function getReceitaFromIdReceita (idReceita)
   return response.recordset[0]
 }
 
+async function getIdReceitaFromNomeReceita(nomeReceita)
+{
+  const response = await execSQL("SELECT ID FROM KITCHNY.DBO.RECEITAS WHERE NOME LIKE '%" + nomeReceita + "%'");
+
+  if(response.recordset.length === 0)
+    return undefined;
+
+  return response.recordset[0].ID;
+}
+
 // Retorna todos os ingredientes de uma receita
 router.get("/api/ingredientesReceita/:id?", async (req, res) => {
   try {
     let nomeReceita = req.params.id;
-    const id = await getIdReceita(nomeReceita);
+    const id = await getIdReceitaFromNomeReceita(nomeReceita);
     const response = await execSQL(
       "SELECT * FROM KITCHNY.DBO.INGREDIENTES WHERE RECEITA = " + id
     );
@@ -165,6 +175,36 @@ router.get("/api/ingredientesReceita/:id?", async (req, res) => {
       .send({ status: "Erro na busca de ingredienes de uma receita" });
   }
 });
+
+// Atualiza a avaliação de uma receita
+router.post("/api/updateAvaliacao", async (req, res) => {
+  try{
+    let avaliacao = req.body.avaliacao;
+    let nomeReceita = req.body.nome;
+    let notaAtual = await getAvaliacaoFromNomeReceita(nomeReceita);
+    let media = ((notaAtual + avaliacao) / 2.0);
+    
+
+    await execSQL("UPDATE KITCHNY.DBO.RECEITAS SET AVALIACAO = " + media);
+
+    return res.status(200).send({ status: "Avaliação alterada com sucesso!" });
+  }
+  catch(error){
+    return res.status(500).send({ status: "Erro ao alterar avaliação!" });
+  }
+})
+
+async function getAvaliacaoFromNomeReceita(nomeReceita)
+{
+  const response = await execSQL("SELECT AVALIACAO FROM KITCHNY.DBO.RECEITAS WHERE NOME LIKE '%" + nomeReceita + "%'");
+
+  if(response.recordset.length === 0)
+    return undefined;
+
+  
+
+  return response.recordset[0].AVALIACAO;
+}
 
 // Insere uma receita
 router.post("/api/insertReceita", async (req, res) => {

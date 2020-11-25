@@ -14,6 +14,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.json.JSONObject;
+
 import java.io.InputStream;
 import java.util.List;
 
@@ -183,6 +185,36 @@ public class TelaReceita extends AppCompatActivity {
         });
     }
 
+    private void updateAvaliacao(float nota)
+    {
+        Receita receita = new Receita("Paella", nota);
+        Call<Status> call = new RetrofitConfig().getService().updateAvaliacao(receita);
+        call.enqueue(new Callback<Status>() {
+            @SuppressLint("SetTextI18n")
+            @Override
+            public void onResponse(Response<Status> response, Retrofit retrofit) {
+                if(response.isSuccess()) {
+                    Toast.makeText(TelaReceita.this, "Avaliação enviada com sucesso", Toast.LENGTH_SHORT).show();
+                }
+                else
+                {
+                    try
+                    {
+                        JSONObject jObjError = new JSONObject(response.errorBody().string());
+                        Toast.makeText(TelaReceita.this, jObjError.getString("status"), Toast.LENGTH_SHORT).show();
+                    }
+                    catch (Exception e)
+                    { }
+                }
+            }
+
+            @Override
+            public void onFailure(Throwable t) {
+                Toast.makeText(TelaReceita.this, "Falha na busca de receita", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
     private void setNotaReceita (float nota)
     {
         int conversao = (int) nota / 2;
@@ -198,6 +230,8 @@ public class TelaReceita extends AppCompatActivity {
 
         for (int i = 0; i < qtdAval; i++)
             vetorDeAval[i].setImageResource(R.drawable.baseline_star_24);
+
+        updateAvaliacao(qtdAval * 2);
     }
 
     private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {

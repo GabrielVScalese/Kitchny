@@ -17,6 +17,9 @@ public interface Service {
     @POST("insertUsuario")
     Call<Status> insertUsuario (@Body Usuario usuario);
 
+    @POST("updateAvaliacao")
+    Call<Status> updateAvaliacao (@Body Receita receita);
+
     @GET("usuario/{email}")
     Call<Usuario> getUsuario (@Path("email") String email);
 
