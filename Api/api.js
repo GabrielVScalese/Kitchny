@@ -61,9 +61,9 @@ router.get("/api/receitas", async (req, res) => {
 });
 
 // Retorna uma receita com um determinado nome
-router.get("/api/receita/:id?", async (req, res) => {
+router.get("/api/receita/:nomeReceita", async (req, res) => {
   try {
-    let nomeReceita = req.params.id;
+    let nomeReceita = req.params.nomeReceita;
 
     const receita = await getReceitaFromNomeReceita(nomeReceita);
 
@@ -79,13 +79,13 @@ router.get("/api/receita/:id?", async (req, res) => {
   }
 });
 
-async function getReceitaFromNomeReceita (receita)
+async function getReceitaFromNomeReceita (nomeReceita)
 {
   const response = await execSQL(
-    "SELECT * FROM KITCHNY.DBO.RECEITAS WHERE NOME LIKE '%" + receita + "%'"
+    "SELECT * FROM KITCHNY.DBO.RECEITAS WHERE NOME LIKE '%" + nomeReceita + "%'"
   );
   
-  if (response.rowsAffected == 0)
+  if (response.rowsAffected === 0)
   {
     return undefined;
   }
@@ -93,39 +93,28 @@ async function getReceitaFromNomeReceita (receita)
      return response.recordset[0];
 }
 
-// Retorna receitas associadas aos ingredientes
-router.get("/api/receitasFromIngrediente/:id?", async (req, res) => {
-  try {
-    let nomeIngrediente = req.params.id;
-
-    let idReceita = await getIdReceitaFromIngrediente(nomeIngrediente);
-    let receita = await nomeReceitaFromIngrediente(idReceita);
-
-    return res.json(receita);
-  } catch (error) {
-    return res.status(500).send({ status: "Erro na busca de receitas!" });
-  }
-});
-
-async function getReceitaFromIngrediente(idReceita) {
-  const response = await execSQL(
-    "SELECT * FROM KITCHNY.DBO.RECEITAS WHERE ID = " + idReceita
-  );
-
-  return response.recordset[0];
-}
-
-// Rota nova
-router.get("/api/receitaFromPesquisa", async(req, res) => {
+// Retorna receitas a partir de uma pesquisa
+router.get("/api/receitaFromPesquisa/:pesquisa", async(req, res) => {
   try{
-    let obj = req.body;
-    let idReceita = await getIdReceitaFromIngrediente(obj.nomeIngrediente);
-    let receita1 = await getReceitaFromIngrediente(idReceita);
-    let receita2 = await getReceitaFromNomeReceita(obj.nomeReceita);
+    let pesquisa = req.params.pesquisa
+
+    let idReceita = await getIdReceitaFromNomeIngrediente(pesquisa);
+    let receita1;
+
+    if (idReceita === undefined)
+        receita1 = undefined
+    else
+        receita1 = await getReceitaFromIdReceita (idReceita)
+
+    let receita2 = await getReceitaFromNomeReceita(pesquisa);
 
     let receitas = [];
-    receitas.push(receita1);
-    receitas.push(receita2);
+
+    if (receita1 !== undefined)
+        receitas.push(receita1);
+
+    if (receita2 !== undefined)
+        receitas.push(receita2);
 
     return res.json(receitas);
   }
@@ -134,16 +123,22 @@ router.get("/api/receitaFromPesquisa", async(req, res) => {
   }
 })
 
-// Retorna o idDaReceita
-async function getIdReceitaFromIngrediente(ingrediente) {
-  const response = await execSQL(
-    "SELECT RECEITA FROM KITCHNY.DBO.INGREDIENTES WHERE NOME LIKE " +
-      "'%" +
-      ingrediente +
-      "%'"
-  );
+async function getIdReceitaFromNomeIngrediente (nomeIngrediente)
+{
+  const response = await execSQL("SELECT RECEITA FROM KITCHNY.DBO.INGREDIENTES " +
+      "WHERE NOME LIKE '%" + nomeIngrediente + "%'")
 
-  return response.recordset[0].RECEITA;
+  if (response.recordset.length === 0)
+      return undefined
+
+  return response.recordset[0].RECEITA
+}
+
+async function getReceitaFromIdReceita (idReceita)
+{
+  const response = await execSQL("SELECT * FROM KITCHNY.DBO.RECEITAS WHERE ID = " + idReceita)
+
+  return response.recordset[0]
 }
 
 // Retorna todos os ingredientes de uma receita
@@ -170,14 +165,6 @@ router.get("/api/ingredientesReceita/:id?", async (req, res) => {
       .send({ status: "Erro na busca de ingredienes de uma receita" });
   }
 });
-
-async function getIdReceitaFromIngrediente(nomeReceita) {
-  const response = await execSQL(
-    "SELECT * FROM KITCHNY.DBO.RECEITAS WHERE NOME LIKE '%" + nomeReceita + "%'"
-  );
-
-  return response.recordset[0].id;
-}
 
 // Insere uma receita
 router.post("/api/insertReceita", async (req, res) => {
