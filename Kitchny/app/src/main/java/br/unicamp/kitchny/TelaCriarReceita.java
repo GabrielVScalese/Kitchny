@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Adapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -28,6 +29,7 @@ public class TelaCriarReceita extends AppCompatActivity {
     private List<String> listaModoDePreparo;
     private EditText edtNomeReceita;
     private Button btnSendReceita;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,25 +55,28 @@ public class TelaCriarReceita extends AppCompatActivity {
         btnSendReceita.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if (listaIngredientes.size() == 1 || listaModoDePreparo.size() == 1 || edtNomeReceita.getText().toString().equals("")) {
+                    Toast.makeText(TelaCriarReceita.this, "Valores fornecidos são inválidos", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
                 inserirReceita();
                 inserirIngredientes();
+                limparListas();
             }
         });
     }
 
-    private void inserirReceita ()
-    {
+    private void inserirReceita() {
         Receita receita = new Receita(edtNomeReceita.getText().toString(), "", getModoDePreparo(), "", 0.0F);
         Call<Status> call = new RetrofitConfig().getService().inserirReceita(receita);
         call.enqueue(new Callback<Status>() {
             @SuppressLint("SetTextI18n")
             @Override
             public void onResponse(Response<Status> response, Retrofit retrofit) {
-                if(response.isSuccess()) {
+                if (response.isSuccess()) {
                     Toast.makeText(TelaCriarReceita.this, "Receita inserida com sucesso!", Toast.LENGTH_SHORT).show();
-                }
-                else
-                {
+                } else {
                     Toast.makeText(TelaCriarReceita.this, "Falha na inserção de receita", Toast.LENGTH_SHORT).show();
                 }
             }
@@ -83,18 +88,15 @@ public class TelaCriarReceita extends AppCompatActivity {
         });
     }
 
-    private void inserirIngredientes ()
-    {
-        Call<Status> call = new RetrofitConfig().getService().inserirIngredientes("Paella", getIngredientes());
+    private void inserirIngredientes() {
+        Call<Status> call = new RetrofitConfig().getService().inserirIngredientes(edtNomeReceita.getText().toString(), getIngredientes());
         call.enqueue(new Callback<Status>() {
             @SuppressLint("SetTextI18n")
             @Override
             public void onResponse(Response<Status> response, Retrofit retrofit) {
-                if(response.isSuccess()) {
+                if (response.isSuccess()) {
                     //Toast.makeText(TelaCriarReceita.this, "Receita inserida com sucesso!", Toast.LENGTH_SHORT).show();
-                }
-                else
-                {
+                } else {
                     Toast.makeText(TelaCriarReceita.this, "Falha na inserção de ingredientes", Toast.LENGTH_SHORT).show();
                 }
             }
@@ -106,23 +108,29 @@ public class TelaCriarReceita extends AppCompatActivity {
         });
     }
 
-    private String getModoDePreparo ()
-    {
-        StringBuilder ret = new StringBuilder();
+    private String getModoDePreparo() {
+        String ret = "";
 
-        for (String modoDePreparo : listaModoDePreparo)
-            ret.append(modoDePreparo).append("\n");
-
-        return ret.toString();
-    }
-
-    private Ingrediente[] getIngredientes ()
-    {
-        Ingrediente[] ret = new Ingrediente[100];
-
-        for (int i = 0; i < listaIngredientes.size(); i++)
-             ret[i] = listaIngredientes.get(i);
+        for (int i = 1; i < listaModoDePreparo.size(); i++)
+            ret += listaModoDePreparo.get(i) + "\n";
 
         return ret;
+    }
+
+    private Ingrediente[] getIngredientes() {
+        Ingrediente[] ret = new Ingrediente[listaIngredientes.size() - 1];
+
+        for (int i = 1; i < listaIngredientes.size(); i++)
+            ret[i - 1] = listaIngredientes.get(i);
+
+        return ret;
+    }
+
+    private void limparListas() {
+        for (int i = 1; i < listaIngredientes.size(); i++)
+            listaIngredientes.remove(i);
+
+        for (int i = 1; i < listaModoDePreparo.size(); i++)
+            listaModoDePreparo.remove(i);
     }
 }

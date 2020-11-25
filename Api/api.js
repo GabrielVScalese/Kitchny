@@ -441,7 +441,7 @@ router.post("/api/insertIngredientes/:nomeReceita", async(req, res) => {
       await execSQL(
         "INSERT INTO KITCHNY.DBO.INGREDIENTES VALUES (" +
           "'" +
-          ingredientes[i].ingrediente +
+          ingredientes[i].nomeIngrediente +
           "'" +
           "," +
           idReceita +

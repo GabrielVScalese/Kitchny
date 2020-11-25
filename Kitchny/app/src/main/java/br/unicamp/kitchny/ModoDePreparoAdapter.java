@@ -77,7 +77,6 @@ public class ModoDePreparoAdapter extends ArrayAdapter<String> {
                         (keyCode == KeyEvent.KEYCODE_ENTER)) {
 
                     String modoDePreparo = edtNumPasso.getText().toString();
-                    modoDePreparo = modoDePreparo.replace("\n", "");
 
                     dados.add(modoDePreparo);
 
