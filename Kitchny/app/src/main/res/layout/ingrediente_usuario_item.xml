@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <EditText
+        android:id="@+id/edtIngredienteEscolhido"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:hint="Digite um ingrediente"
+        android:textSize="13sp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="10dp"
+        />
+
+    <EditText
+        android:id="@+id/edtQuantidadeIngrediente"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:hint="Digite a quantidade"
+        android:textSize="13sp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginTop="10dp"
+        />
+</LinearLayout>

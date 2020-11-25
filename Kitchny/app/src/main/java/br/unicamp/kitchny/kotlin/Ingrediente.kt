@@ -48,6 +48,7 @@ class Ingrediente (nomeIngrediente: String, quantidade: String, modoDePreparo: S
 
     constructor(nomeIngrediente: String) : this(nomeIngrediente, "", "")
     constructor(ingrediente: Ingrediente) : this(ingrediente.nomeIngrediente, ingrediente.quantidade, ingrediente.modoDePreparo)
+    constructor(nomeIngrediente: String, quantidade: String) : this(nomeIngrediente, quantidade, "")
 
     override fun equals(other: Any?): Boolean
     {

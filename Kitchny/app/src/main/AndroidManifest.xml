@@ -12,18 +12,20 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name="TelaReceita">
+        <activity android:name=".TelaCriarReceita">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".TelaInicialCesta"/>
-        <activity android:name=".TelaInicialUsuario"/>
-        <activity android:name=".TelaInicial"/>
-        <activity android:name=".TelaDeCriarConta" />
-        <activity android:name=".MainActivity"/>
+        <activity android:name=".TelaReceita"/>
+        <activity android:name=".TelaInicialCesta" />
+        <activity android:name=".TelaInicialUsuario" />
+        <activity android:name=".TelaInicial" />
+        <activity android:name=".TelaDeCriarConta" >
+        </activity>
+        <activity android:name=".MainActivity" />
     </application>
 
 </manifest>
