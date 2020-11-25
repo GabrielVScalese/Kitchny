@@ -51,18 +51,10 @@ public class IngredienteEscolhidoAdapter extends ArrayAdapter<Ingrediente> {
         EditText edtIngrediente = view.findViewById(R.id.edtIngredienteEscolhido);
         EditText edtQuantidade = view.findViewById(R.id.edtQuantidadeIngrediente);
 
-        if(dados.get(position).getNomeIngrediente().equals("Digite um ingrediente"))
-        {
-            edtIngrediente.setText("");
-            edtQuantidade.setText("");
-        }
-        else
-        {
-            Ingrediente ingrediente = dados.get(position);
+        Ingrediente ingrediente = dados.get(position);
 
-            edtIngrediente.setText(ingrediente.getNomeIngrediente());
-            edtQuantidade.setText(ingrediente.getQuantidade());
-        }
+        edtIngrediente.setText(ingrediente.getNomeIngrediente());
+        edtQuantidade.setText(ingrediente.getQuantidade());
 
         return view;
     }

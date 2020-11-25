@@ -7,24 +7,8 @@ class Ingrediente (nomeIngrediente: String, quantidade: String, modoDePreparo: S
     var nomeIngrediente: String = ""
         set(value)
         {
-            if(value.isBlank())
-                throw Exception("nomeIngrediente inválido")
-
-            var temLetra = false
-            for(c in value)
-            {
-                if(c.isLetter())
-                {
-                    temLetra = true
-                    break
-                }
-            }
-            if(!temLetra)
-                throw Exception("nomeIngrediente inválido - não há letras")
-
             field = value
         }
-
 
     var quantidade: String = ""
         set(value)
@@ -37,7 +21,6 @@ class Ingrediente (nomeIngrediente: String, quantidade: String, modoDePreparo: S
         {
             field = value
         }
-
 
     init
     {

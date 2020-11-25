@@ -47,19 +47,11 @@ public class ModoDePreparoAdapter extends ArrayAdapter<String> {
             view = layoutinflater.inflate(layoutResourceId, parent, false);
         }
 
-
         TextView tvNumItem = view.findViewById(R.id.tvNumItem);
         EditText edtNumPasso = view.findViewById(R.id.edtNumPasso);
 
-        if(dados.get(position).equals("Digite o 1º passo"))
-        {
-            edtNumPasso.setText("");
-        }
-        else
-        {
-            tvNumItem.setText(position + 1 + "º");
-            edtNumPasso.setText(dados.get(position));
-        }
+        tvNumItem.setText(position + 1 + "º");
+        edtNumPasso.setText(dados.get(position));
 
         return view;
     }

@@ -26,11 +26,11 @@ public class TelaCriarReceita extends AppCompatActivity {
         listViewModoDePreparo = findViewById(R.id.listaModoDePreparo);
 
         listaIngredientes = new ArrayList<>();
-        listaIngredientes.add(new Ingrediente("Digite um ingrediente", "Digite a quantidade"));
+        listaIngredientes.add(new Ingrediente("", ""));
         IngredienteEscolhidoAdapter adapter = new IngredienteEscolhidoAdapter(TelaCriarReceita.this, R.layout.ingrediente_usuario_item, listaIngredientes);
 
         listaModoDePreparo = new ArrayList<>();
-        listaModoDePreparo.add("Digite o 1º passo");
+        listaModoDePreparo.add("");
         ModoDePreparoAdapter adapter2 = new ModoDePreparoAdapter(TelaCriarReceita.this, R.layout.modo_de_preparo_item, listaModoDePreparo);
 
         listViewModoDePreparo.setAdapter(adapter2);
