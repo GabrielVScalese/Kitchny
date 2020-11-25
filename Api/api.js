@@ -9,6 +9,7 @@ const connStr =
 const sql = require("mssql");
 
 const fs = require("fs");
+const { exec } = require("child_process");
 var receitas = JSON.parse(fs.readFileSync("receitas.json"));
 
 sql
@@ -212,6 +213,7 @@ router.post("/api/insertReceita", async (req, res) => {
     let nome = req.body.nome;
     let rendimento = req.body.rendimento;
     let modoDePreparo = req.body.modoDePreparo;
+    let imagem = req.body.imagem;
     let avaliacao = null;
 
     await execSQL(
@@ -228,7 +230,11 @@ router.post("/api/insertReceita", async (req, res) => {
         modoDePreparo +
         "'" +
         "," +
-        avaliacao +
+        "'" + 
+        imagem +
+        "'" +
+        "," + 
+        avaliacao + 
         ")"
     );
 
@@ -345,7 +351,7 @@ router.get("/api/ingrediente/:id?", async (req, res) => {
   }
 });
 
-// Registra os ingredientes do JSON no BD (não funciona corretamente)
+/*// Registra os ingredientes do JSON no BD (não funciona corretamente)
 router.post("/api/insertIngredientes", async (req, res) => {
   try {
     for (let i = 0; i < receitas.length; i++) {
@@ -422,7 +428,37 @@ async function obterIngrediente(receita) {
   }
 
   return ingredientes;
-}
+}*/
+
+router.post("/api/insertIngredientes/:nomeReceita", async(req, res) => {
+  try {
+    let ingredientes = req.body;
+    let nomeReceita = req.params.nomeReceita;
+    
+    let idReceita = await getIdReceitaFromNomeReceita(nomeReceita);
+
+    for (let i = 0; i < ingredientes.length; i++) {
+      await execSQL(
+        "INSERT INTO KITCHNY.DBO.INGREDIENTES VALUES (" +
+          "'" +
+          ingredientes[i].ingrediente +
+          "'" +
+          "," +
+          idReceita +
+          "," +
+          "'" +
+          ingredientes[i].quantidade +
+          "'" +
+          ")"
+      );
+    }
+
+    return res.status(200).send({ status: "Ingredientes incluídos!" });
+  }
+  catch (error){
+    return res.status(500).send({ status: "Erro na inserção de ingredientes!" });
+  }
+})
 
 /////////////////////////////////////////////////////////////////////////////// Usuários
 

@@ -2,6 +2,7 @@ package br.unicamp.kitchny;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -48,10 +49,43 @@ public class ModoDePreparoAdapter extends ArrayAdapter<String> {
         }
 
         TextView tvNumItem = view.findViewById(R.id.tvNumItem);
-        EditText edtNumPasso = view.findViewById(R.id.edtNumPasso);
+        final EditText edtNumPasso = view.findViewById(R.id.edtNumPasso);
 
-        tvNumItem.setText(position + 1 + "º");
+        if (dados.size() == 1) {
+            tvNumItem.setText(dados.size() + "º");
+            edtNumPasso.setHint("Digite o " + dados.size() + "º passo");
+        }
+        else
+        {
+            tvNumItem.setText((position) + "º");
+            edtNumPasso.setHint("Digite o " + dados.size() + "º passo");
+        }
+
+        if (position == 0)
+        {
+            if (dados.size() == 1)
+                tvNumItem.setText(dados.size() + "º");
+            else
+                tvNumItem.setText((dados.size()) + "º");
+        }
+
         edtNumPasso.setText(dados.get(position));
+
+        edtNumPasso.setOnKeyListener(new View.OnKeyListener() {
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if ((event.getAction() == KeyEvent.ACTION_DOWN) &&
+                        (keyCode == KeyEvent.KEYCODE_ENTER)) {
+
+                    String modoDePreparo = edtNumPasso.getText().toString();
+                    modoDePreparo = modoDePreparo.replace("\n", "");
+
+                    dados.add(modoDePreparo);
+
+                    return true;
+                }
+                return false;
+            }
+        });
 
         return view;
     }

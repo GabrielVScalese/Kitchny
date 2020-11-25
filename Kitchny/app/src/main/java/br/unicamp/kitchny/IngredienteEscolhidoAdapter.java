@@ -2,6 +2,7 @@ package br.unicamp.kitchny;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,6 +10,7 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -26,6 +28,7 @@ public class IngredienteEscolhidoAdapter extends ArrayAdapter<Ingrediente> {
     private Context context;
     private int layoutResourceId;
     private List<Ingrediente> dados;
+    private boolean isFirst;
 
 
     public IngredienteEscolhidoAdapter (@NonNull Context context, int resource, @NonNull List<Ingrediente> dados) {
@@ -34,6 +37,7 @@ public class IngredienteEscolhidoAdapter extends ArrayAdapter<Ingrediente> {
         this.context = context;
         this.layoutResourceId = resource;
         this.dados = dados;
+        this.isFirst = false;
     }
 
     @SuppressLint("SetTextI18n")
@@ -48,8 +52,23 @@ public class IngredienteEscolhidoAdapter extends ArrayAdapter<Ingrediente> {
             view = layoutinflater.inflate(layoutResourceId, parent, false);
         }
 
-        EditText edtIngrediente = view.findViewById(R.id.edtIngredienteEscolhido);
-        EditText edtQuantidade = view.findViewById(R.id.edtQuantidadeIngrediente);
+        final EditText edtIngrediente = view.findViewById(R.id.edtIngredienteEscolhido);
+        final EditText edtQuantidade = view.findViewById(R.id.edtQuantidadeIngrediente);
+
+        edtQuantidade.setOnKeyListener(new View.OnKeyListener() {
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if ((event.getAction() == KeyEvent.ACTION_DOWN) &&
+                        (keyCode == KeyEvent.KEYCODE_ENTER)) {
+
+                    Ingrediente ingrediente = new Ingrediente(edtIngrediente.getText().toString(),
+                            edtQuantidade.getText().toString());
+                    dados.add(ingrediente);
+
+                    return true;
+                }
+                return false;
+            }
+        });
 
         Ingrediente ingrediente = dados.get(position);
 

@@ -37,4 +37,10 @@ public interface Service {
 
     @GET("ingredientesReceita/{nomeReceita}")
     Call<List<Ingrediente>> getIngredientesFromNomeReceita (@Path("nomeReceita") String nomeReceita);
+
+    @POST("insertReceita")
+    Call<Status> inserirReceita (@Body Receita receita);
+
+    @POST("insertIngredientes/{nomeReceita}")
+    Call<Status> inserirIngredientes (@Path("nomeReceita") String nomeReceita, @Body Ingrediente[] ingredientes);
 }
