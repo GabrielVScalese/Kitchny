@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.Adapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -30,6 +31,7 @@ public class TelaCriarReceita extends AppCompatActivity {
     private EditText edtNomeReceita;
     private Button btnSendReceita;
 
+    private ImageView imgUpload;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +42,7 @@ public class TelaCriarReceita extends AppCompatActivity {
         listViewModoDePreparo = findViewById(R.id.listaModoDePreparo);
         edtNomeReceita = findViewById(R.id.tvTituloReceitaEscolhido);
         btnSendReceita = findViewById(R.id.btnSendReceita);
+        //imgUpload = findViewById()
 
         listaIngredientes = new ArrayList<>();
         listaIngredientes.add(new Ingrediente("", ""));
