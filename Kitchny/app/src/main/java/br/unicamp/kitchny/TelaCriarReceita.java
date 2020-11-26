@@ -3,34 +3,35 @@ package br.unicamp.kitchny;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
-import android.content.Intent;
 import android.graphics.Bitmap;
-import android.net.Uri;
+import android.graphics.BitmapFactory;
+import android.media.Image;
+import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
-import android.provider.MediaStore;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.net.URLStreamHandler;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
 import br.unicamp.kitchny.kotlin.Ingrediente;
 import br.unicamp.kitchny.kotlin.Receita;
+import br.unicamp.kitchny.kotlin.Status;
 import retrofit.Call;
 import retrofit.Callback;
 import retrofit.Response;
 import retrofit.Retrofit;
-import retrofit.http.Url;
 
 public class TelaCriarReceita extends AppCompatActivity {
 
@@ -39,10 +40,9 @@ public class TelaCriarReceita extends AppCompatActivity {
     private List<Ingrediente> listaIngredientes;
     private List<String> listaModoDePreparo;
     private EditText edtNomeReceita;
+    private EditText edtEnderecoImagem;
     private Button btnSendReceita;
-
-    private ImageView imgUpload;
-    private String urlImagem;
+    private ImageView imgReceita;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,8 +52,9 @@ public class TelaCriarReceita extends AppCompatActivity {
         listViewIngrediente = findViewById(R.id.listaIngredientesEscolhidos);
         listViewModoDePreparo = findViewById(R.id.listaModoDePreparo);
         edtNomeReceita = findViewById(R.id.tvTituloReceitaEscolhido);
+        edtEnderecoImagem = findViewById(R.id.edtEnderecoImagem);
         btnSendReceita = findViewById(R.id.btnSendReceita);
-        imgUpload = findViewById(R.id.addImage);
+        imgReceita = findViewById(R.id.addImage);
 
         listaIngredientes = new ArrayList<>();
         listaIngredientes.add(new Ingrediente("", ""));
@@ -69,7 +70,7 @@ public class TelaCriarReceita extends AppCompatActivity {
         btnSendReceita.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (listaIngredientes.size() == 1 || listaModoDePreparo.size() == 1 || edtNomeReceita.getText().toString().equals("")) {
+                if (listaIngredientes.size() == 1 || listaModoDePreparo.size() == 1 || edtNomeReceita.getText().toString().equals("") || edtEnderecoImagem.getText().toString().equals("")) {
                     Toast.makeText(TelaCriarReceita.this, "Valores fornecidos são inválidos", Toast.LENGTH_SHORT).show();
                     return;
                 }
@@ -80,45 +81,31 @@ public class TelaCriarReceita extends AppCompatActivity {
             }
         });
 
-        imgUpload.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent()
-                        .setType("*/*")
-                        .setAction(Intent.ACTION_GET_CONTENT);
-
-                startActivityForResult(Intent.createChooser(intent, "Select a file"), 123);
-            }
-        });
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == 123 && resultCode == RESULT_OK)
-        {
-            System.setProperty("java.protocol.handler.pkgs", "content");
-            Uri selectedFile = data.getData();
-            urlImagem = selectedFile.toString();
-            setImagemReceita(urlImagem);
-        }
-    }
-
-    private void setImagemReceita (String uri)
-    {
-        try {
-            if(Uri.parse(uri) != null){
-                Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver() , Uri.parse(uri));
-                imgUpload.setImageBitmap(bitmap);
-            }
-        }
-        catch (Exception e) {
-            //handle exception
-        }
+        // Evento enter
+        edtEnderecoImagem.setOnEditorActionListener(
+                new EditText.OnEditorActionListener() {
+                    @Override
+                    public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                        if (actionId == EditorInfo.IME_ACTION_SEARCH ||
+                                actionId == EditorInfo.IME_ACTION_DONE ||
+                                event != null &&
+                                        event.getAction() == KeyEvent.ACTION_DOWN &&
+                                        event.getKeyCode() == KeyEvent.KEYCODE_ENTER) {
+                            if (event == null || !event.isShiftPressed()) {
+                                Toast.makeText(TelaCriarReceita.this, "a", Toast.LENGTH_SHORT).show();
+                                DownloadImageTask dt = new DownloadImageTask();
+                                dt.execute(edtEnderecoImagem.getText().toString());
+                                return true; // consume.
+                            }
+                        }
+                        return false; // pass on to other listeners.
+                    }
+                }
+        );
     }
 
     private void inserirReceita() {
-        Receita receita = new Receita(edtNomeReceita.getText().toString(), "", getModoDePreparo(), urlImagem, 0.0F);
+        Receita receita = new Receita(edtNomeReceita.getText().toString(), "", getModoDePreparo(), edtEnderecoImagem.getText().toString(), 0.0F);
 
         Call<Status> call = new RetrofitConfig().getService().inserirReceita(receita);
         call.enqueue(new Callback<Status>() {
@@ -183,5 +170,26 @@ public class TelaCriarReceita extends AppCompatActivity {
 
         for (int i = 1; i < listaModoDePreparo.size(); i++)
             listaModoDePreparo.remove(i);
+    }
+
+    private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
+
+        protected Bitmap doInBackground(String... urls) {
+            String urldisplay = urls[0];
+            Bitmap mIcon11 = null;
+            try {
+                InputStream in = new java.net.URL(urldisplay).openStream();
+                mIcon11 = BitmapFactory.decodeStream(in);
+            } catch (Exception e) {
+                Log.e("Error", e.getMessage());
+                e.printStackTrace();
+                //Toast.makeText(TelaCriarReceita.this, "Endereço de imagem inválido!", Toast.LENGTH_SHORT).show();
+            }
+            return mIcon11;
+        }
+
+        protected void onPostExecute(Bitmap result) {
+            imgReceita.setImageBitmap(Bitmap.createScaledBitmap(result, 300, 150, false));
+        }
     }
 }

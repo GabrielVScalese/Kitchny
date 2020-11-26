@@ -21,6 +21,7 @@ import java.util.List;
 
 import br.unicamp.kitchny.kotlin.Ingrediente;
 import br.unicamp.kitchny.kotlin.Receita;
+import br.unicamp.kitchny.kotlin.Status;
 import retrofit.Call;
 import retrofit.Callback;
 import retrofit.Response;
