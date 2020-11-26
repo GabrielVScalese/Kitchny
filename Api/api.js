@@ -564,6 +564,31 @@ router.put("/api/updateUsuario", async (req, res) => {
   }
 });
 
+router.post("/api/updateAprovacao/:email", async (req, res) => {
+  try{
+    let email = req.params.email;
+    const qtdReceitasAprovadasAtual = await getQtdReceitasAprovadas(email)
+    await updateQtdReceitasAprovadas(qtdReceitasAprovadasAtual + 1)
+
+    return res.status(200).send({ status: "Avaliacao alterada!" });
+  }
+  catch (error){
+    return res.status(500).send({ status: "Erro na atualizacao de quantidades de receitas aprovadas" });
+  }
+})
+
+async function getQtdReceitasAprovadas (email)
+{
+  const response = await execSQL("SELECT QTDRECEITASAPROVADAS * FROM KITCHNY.DBO.USUARIOS WHERE EMAIL = '" + email + "'")
+
+  return response.recordset[0];
+}
+
+async function updateQtdReceitasAprovadas(qtdReceitasAprovadas)
+{
+  await execSQL("UPDATE KITCHNY.DBO.USUARIOS SET QTDRECEITASAPROVADAS = " + qtdReceitasAprovadas)
+}
+
 // Autentica um usuário a partir da senha
 router.post("/api/autenticateUsuario", async (req, res) => {
   try {
