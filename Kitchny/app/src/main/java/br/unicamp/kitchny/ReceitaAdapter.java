@@ -83,15 +83,29 @@ public class ReceitaAdapter extends ArrayAdapter<Receita> {
     {
         protected Bitmap doInBackground(String... urls)
         {
-            if (urls[0].contains("content"))
+          if (urls[0].contains("content"))
             {
-                try {
-                    Bitmap bitmap = MediaStore.Images.Media.getBitmap(context.getContentResolver(),Uri.parse(urls[0]));
+                try
+                {
+                    InputStream in = new java.net.URL("https://www.safraes.com.br/arquivos/noticias/2961_cafeicultores_pomeranos._na_casa_do_elmario_seidler_na_zona_rural_de_itarana_nos_deparamos_com_essa_placa_cuja_frase_em_portugues_quer_dizer_sempre_feliz_nunca_triste._foto_de_leandro_fidelis.jpg").openStream();
+                    Bitmap mIcon11 = BitmapFactory.decodeStream(in);
+                    return mIcon11;
+                }
+                catch (Exception e)
+                {
+                    Log.e("Error", e.getMessage());
+                    e.printStackTrace();
+                }
+               /* try {
+                    Uri uriImg = Uri.parse(urls[0]);
+                    context.getContentResolver().takePersistableUriPermission( uriImg, Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+                    context.getContentResolver().takePersistableUriPermission( uriImg, Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                    Bitmap bitmap = MediaStore.Images.Media.getBitmap( context.getContentResolver(), Uri.parse(urls[0]));
                     return bitmap;
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-                //imgUpload.setImageBitmap(bitmap);
+                //imgUpload.setImageBitmap(bitmap);*/
             }
 
             String urlDisplay = urls[0];

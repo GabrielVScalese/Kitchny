@@ -91,8 +91,7 @@ public class TelaReceita extends AppCompatActivity {
         vetorDeAval[4] = aval5;
 
         // Carregar imagem da receita
-        DownloadImageTask dt = new DownloadImageTask();
-        dt.execute("https://i.pinimg.com/474x/95/ca/e9/95cae9537671e3f62cbe6e6d8ab8b962.jpg");
+
 
         Bundle bundle = getIntent().getExtras();
 
@@ -176,6 +175,8 @@ public class TelaReceita extends AppCompatActivity {
                     tvTituloReceita.setText(receita.getNome());
                     tvModoDePreparo.setText(receita.getModoDePreparo());
                     setNotaReceita(receita.getAvaliacao());
+                    DownloadImageTask dt = new DownloadImageTask();
+                    dt.execute(receita.getImagem());
                 }
                 else
                     Toast.makeText(TelaReceita.this, "Falha na busca de receita", Toast.LENGTH_SHORT).show();
@@ -240,6 +241,16 @@ public class TelaReceita extends AppCompatActivity {
     private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
 
         protected Bitmap doInBackground(String... urls) {
+            if (urls[0].contains("content")) {
+                try {
+                    InputStream in = new java.net.URL("https://www.safraes.com.br/arquivos/noticias/2961_cafeicultores_pomeranos._na_casa_do_elmario_seidler_na_zona_rural_de_itarana_nos_deparamos_com_essa_placa_cuja_frase_em_portugues_quer_dizer_sempre_feliz_nunca_triste._foto_de_leandro_fidelis.jpg").openStream();
+                    Bitmap mIcon11 = BitmapFactory.decodeStream(in);
+                    return mIcon11;
+                } catch (Exception e) {
+                    Log.e("Error", e.getMessage());
+                    e.printStackTrace();
+                }
+            }
             String urldisplay = urls[0];
             Bitmap mIcon11 = null;
             try {
