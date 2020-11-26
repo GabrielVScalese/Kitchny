@@ -13,16 +13,17 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".TelaCriarReceita">
+        </activity>
+        <activity android:name=".TelaReceita"/>
+        <activity android:name=".TelaInicialCesta" />
+        <activity android:name=".TelaInicialUsuario" />
+        <activity android:name=".TelaInicial" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
-        <activity android:name=".TelaReceita"/>
-        <activity android:name=".TelaInicialCesta" />
-        <activity android:name=".TelaInicialUsuario" />
-        <activity android:name=".TelaInicial" />
+         </activity>
         <activity android:name=".TelaDeCriarConta" >
         </activity>
         <activity android:name=".MainActivity" />

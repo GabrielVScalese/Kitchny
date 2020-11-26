@@ -94,9 +94,12 @@ public class TelaReceita extends AppCompatActivity {
         DownloadImageTask dt = new DownloadImageTask();
         dt.execute("https://i.pinimg.com/474x/95/ca/e9/95cae9537671e3f62cbe6e6d8ab8b962.jpg");
 
-        // Obter dados da receita
-        getIngredientesFromNomeReceita("Paella");
-        getReceita("Paella");
+        Bundle bundle = getIntent().getExtras();
+
+        String nomeReceita = bundle.getString("nomeReceita");
+
+        getIngredientesFromNomeReceita(nomeReceita);
+        getReceita(nomeReceita);
 
         aval1.setOnClickListener(new View.OnClickListener() {
             @Override

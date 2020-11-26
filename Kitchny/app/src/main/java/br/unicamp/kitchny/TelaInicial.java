@@ -3,11 +3,14 @@ package br.unicamp.kitchny;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -56,6 +59,22 @@ public class TelaInicial extends AppCompatActivity {
                 }
 
                 return false;
+            }
+        });
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Receita receita = (Receita) listView.getItemAtPosition(position);
+
+                Intent intent = new Intent(TelaInicial.this, TelaReceita.class);
+
+                Bundle bundle = new Bundle();
+
+                bundle.putString("nomeReceita", receita.getNome());
+
+                intent.putExtras(bundle);
+
+                startActivity(intent);
             }
         });
     }

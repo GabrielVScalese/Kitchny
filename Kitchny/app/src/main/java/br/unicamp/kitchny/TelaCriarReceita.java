@@ -3,15 +3,24 @@ package br.unicamp.kitchny;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.provider.MediaStore;
 import android.view.View;
-import android.widget.Adapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.net.URLStreamHandler;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,6 +30,7 @@ import retrofit.Call;
 import retrofit.Callback;
 import retrofit.Response;
 import retrofit.Retrofit;
+import retrofit.http.Url;
 
 public class TelaCriarReceita extends AppCompatActivity {
 
@@ -32,6 +42,7 @@ public class TelaCriarReceita extends AppCompatActivity {
     private Button btnSendReceita;
 
     private ImageView imgUpload;
+    private String urlImagem;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,7 +53,7 @@ public class TelaCriarReceita extends AppCompatActivity {
         listViewModoDePreparo = findViewById(R.id.listaModoDePreparo);
         edtNomeReceita = findViewById(R.id.tvTituloReceitaEscolhido);
         btnSendReceita = findViewById(R.id.btnSendReceita);
-        //imgUpload = findViewById()
+        imgUpload = findViewById(R.id.addImage);
 
         listaIngredientes = new ArrayList<>();
         listaIngredientes.add(new Ingrediente("", ""));
@@ -68,10 +79,47 @@ public class TelaCriarReceita extends AppCompatActivity {
                 limparListas();
             }
         });
+
+        imgUpload.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent()
+                        .setType("*/*")
+                        .setAction(Intent.ACTION_GET_CONTENT);
+
+                startActivityForResult(Intent.createChooser(intent, "Select a file"), 123);
+            }
+        });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == 123 && resultCode == RESULT_OK)
+        {
+            System.setProperty("java.protocol.handler.pkgs", "content");
+            Uri selectedFile = data.getData();
+            urlImagem = selectedFile.toString();
+            setImagemReceita(urlImagem);
+        }
+    }
+
+    private void setImagemReceita (String uri)
+    {
+        try {
+            if(Uri.parse(uri) != null){
+                Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver() , Uri.parse(uri));
+                imgUpload.setImageBitmap(bitmap);
+            }
+        }
+        catch (Exception e) {
+            //handle exception
+        }
     }
 
     private void inserirReceita() {
-        Receita receita = new Receita(edtNomeReceita.getText().toString(), "", getModoDePreparo(), "", 0.0F);
+        Receita receita = new Receita(edtNomeReceita.getText().toString(), "", getModoDePreparo(), urlImagem, 0.0F);
+
         Call<Status> call = new RetrofitConfig().getService().inserirReceita(receita);
         call.enqueue(new Callback<Status>() {
             @SuppressLint("SetTextI18n")
@@ -115,7 +163,7 @@ public class TelaCriarReceita extends AppCompatActivity {
         String ret = "";
 
         for (int i = 1; i < listaModoDePreparo.size(); i++)
-            ret += listaModoDePreparo.get(i) + "\n";
+            ret += i + " - " + listaModoDePreparo.get(i) + "\n";
 
         return ret;
     }

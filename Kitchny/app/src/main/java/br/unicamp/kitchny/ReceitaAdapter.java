@@ -1,11 +1,14 @@
 package br.unicamp.kitchny;
 
+import android.content.*;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.Image;
+import android.net.Uri;
 import android.os.AsyncTask;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -80,6 +83,17 @@ public class ReceitaAdapter extends ArrayAdapter<Receita> {
     {
         protected Bitmap doInBackground(String... urls)
         {
+            if (urls[0].contains("content"))
+            {
+                try {
+                    Bitmap bitmap = MediaStore.Images.Media.getBitmap(context.getContentResolver(),Uri.parse(urls[0]));
+                    return bitmap;
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                //imgUpload.setImageBitmap(bitmap);
+            }
+
             String urlDisplay = urls[0];
             Bitmap mIcon11 = null;
             try
