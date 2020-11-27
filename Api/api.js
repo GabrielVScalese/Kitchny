@@ -12,6 +12,9 @@ const fs = require("fs");
 const { exec } = require("child_process");
 var receitas = JSON.parse(fs.readFileSync("receitas.json"));
 
+// Criptografia
+var CryptoJS = require("crypto-js")
+
 sql
   .connect(connStr)
   .then((conn) => (global.conn = conn))
@@ -504,6 +507,7 @@ async function getUsuario (email)
 router.post("/api/insertUsuario", async (req, res) => {
   try {
     let usuario = req.body;
+    var hash =  CryptoJS.AES.encrypt(usuario.senha, "hex").toString();
 
     await execSQL(
       "INSERT INTO KITCHNY.DBO.USUARIOS VALUES (" +
@@ -516,7 +520,7 @@ router.post("/api/insertUsuario", async (req, res) => {
         "'" +
         "," +
         "'" +
-        usuario.senha +
+        hash +
         "'" +
         "," 
         +
@@ -599,7 +603,9 @@ router.post("/api/autenticateUsuario", async (req, res) => {
         usuario.email +
         "'"
     );
-    if (responseSenha.recordset[0].SENHA == usuario.senha)
+
+    let senhaDescriptografa = CryptoJS.AES.decrypt(responseSenha.recordset[0].SENHA, "hex").toString(CryptoJS.enc.Utf8);
+    if (senhaDescriptografa == usuario.senha)
       return res.status(200).send({ status: "Senha correta!" });
     else return res.status(404).send({ status: "Senha incorreta!" });
   } catch (error) {

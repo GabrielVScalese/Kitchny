@@ -7,8 +7,8 @@ class Usuario (email: String, nome: String, senha: String, qtdReceitasAprovadas:
     var email: String = ""
         set(value)
         {
-            if(value.isBlank() || !value.contains('@'))
-                throw Exception("Email inválido")
+            /*if(value.isBlank() || !value.contains('@'))
+                throw Exception("Email inválido")*/
 
             field = value
         }
@@ -55,8 +55,8 @@ class Usuario (email: String, nome: String, senha: String, qtdReceitasAprovadas:
     var senha: String = ""
         set(value)
         {
-            if(value.isBlank() || value.length < 8)
-                throw Exception("Senha inválida")
+            /*if(value.isBlank() || value.length < 8)
+                throw Exception("Senha inválida")*/
 
             field = value
         }

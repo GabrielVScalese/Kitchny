@@ -36,7 +36,6 @@ public class TelaDeCriarConta extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tela_de_criar_conta);
-        getSupportActionBar().hide();
 
         etNome = findViewById(R.id.etNome);
         etEmail = findViewById(R.id.etEmail);
@@ -68,7 +67,7 @@ public class TelaDeCriarConta extends AppCompatActivity {
             public void onResponse(Response<Status> response, Retrofit retrofit) {
                 if (response.isSuccess())
                 {
-                    Intent intent = new Intent (TelaDeCriarConta.this, TelaInicial.class);
+                    Intent intent = new Intent (TelaDeCriarConta.this, MainActivity.class);
                     startActivity(intent);
                 }
                 else
