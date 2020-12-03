@@ -2,15 +2,10 @@
     <item
         android:id="@+id/page_1"
         android:enabled="true"
-        android:icon="@drawable/add_shopping_cart"
-        android:title=""/>
-    <item
-        android:id="@+id/page_2"
-        android:enabled="true"
         android:icon="@drawable/baseline_restaurant_menu"
         android:title=""/>
     <item
-        android:id="@+id/page_3"
+        android:id="@+id/page_2"
         android:enabled="true"
         android:icon="@drawable/circle_user"
         android:title=""/>

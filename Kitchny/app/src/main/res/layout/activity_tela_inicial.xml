@@ -30,6 +30,7 @@
         />
 
     <Button
+        android:id="@+id/btnCriarReceita"
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:background="@drawable/borda_circular"

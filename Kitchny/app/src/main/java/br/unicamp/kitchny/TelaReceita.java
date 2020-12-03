@@ -1,18 +1,23 @@
 package br.unicamp.kitchny;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import org.json.JSONObject;
 
@@ -28,12 +33,13 @@ import retrofit.Response;
 import retrofit.Retrofit;
 
 // Janela de uma determinada receita
-public class TelaReceita extends AppCompatActivity {
+public class TelaReceita extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener  {
 
     private TextView tvTituloReceita;
     private TextView tvModoDePreparo;
     private ListView listViewIngredientes;
     private ImageView imagemReceita;
+    private Session session;
 
     // Estrelas que demonstram a avaliação da receita
     private ImageView star1;
@@ -55,11 +61,15 @@ public class TelaReceita extends AppCompatActivity {
     // Vetor de estrelas para avaliacao
     private ImageView[] vetorDeAval;
 
+    // Bottom navigation menu
+    private BottomNavigationView menu;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tela_receita);
 
+        menu = (BottomNavigationView) findViewById(R.id.bottom_navigation);
         tvTituloReceita = findViewById(R.id.tvTituloReceita);
         tvModoDePreparo = findViewById(R.id.tvModoDePreparo);
         listViewIngredientes = findViewById(R.id.listaIngredientes);
@@ -90,6 +100,10 @@ public class TelaReceita extends AppCompatActivity {
         vetorDeAval[2] = aval3;
         vetorDeAval[3] = aval4;
         vetorDeAval[4] = aval5;
+
+        // Bottom navigation menu
+        menu.setOnNavigationItemSelectedListener(this);
+        session = new Session(TelaReceita.this);
 
         // Carregar imagem da receita
 
@@ -135,6 +149,17 @@ public class TelaReceita extends AppCompatActivity {
                 setAvalicaoReceita(5);
             }
         });
+
+        if(session.getTela() == 1)
+        {
+            MenuItem menuItem = menu.getMenu().getItem(0);
+            menuItem.setChecked(true);
+        }
+        else
+        {
+            MenuItem menuItem = menu.getMenu().getItem(1);
+            menuItem.setChecked(true);
+        }
     }
 
     private void getIngredientesFromNomeReceita (String nomeReceita)
@@ -267,5 +292,26 @@ public class TelaReceita extends AppCompatActivity {
         protected void onPostExecute(Bitmap result) {
             imagemReceita.setImageBitmap(Bitmap.createScaledBitmap(result, 300, 150, false));
         }
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+
+        switch (item.getItemId()) {
+            case R.id.page_1: {
+                session.setTela(1);
+                Intent intent = new Intent(TelaReceita.this, TelaInicial.class);
+                startActivity(intent);
+                break;
+            }
+            case R.id.page_2: {
+                session.setTela(2);
+                Intent intent = new Intent(TelaReceita.this, TelaInicialUsuario.class);
+                startActivity(intent);
+                break;
+            }
+        }
+
+        return true;
     }
 }

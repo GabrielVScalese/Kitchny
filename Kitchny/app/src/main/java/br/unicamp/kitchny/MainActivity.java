@@ -1,16 +1,20 @@
 package br.unicamp.kitchny;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Toast;
+
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import org.json.JSONObject;
 
@@ -23,11 +27,14 @@ import retrofit.Retrofit;
 // Janela de login
 public class MainActivity extends AppCompatActivity {
 
+
     private Button btnCriarConta;
     private Button btnEntrar;
     private EditText etEmail;
     private EditText etSenha;
     private Usuario usuario;
+    private Session session;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +45,8 @@ public class MainActivity extends AppCompatActivity {
         etSenha = findViewById(R.id.etSenhaLogin);
         btnCriarConta = findViewById(R.id.btnCriarContaLogin);
         btnEntrar = findViewById(R.id.btnEntrarLogin);
+
+        session = new Session(MainActivity.this);
 
         btnEntrar.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -56,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void AutenticarUsuario (Usuario usuario)
+    private void AutenticarUsuario (final Usuario usuario)
     {
         Call<Status> call = new RetrofitConfig().getService().autenticarUsuario(usuario);
         call.enqueue(new Callback<Status>() {
@@ -65,6 +74,7 @@ public class MainActivity extends AppCompatActivity {
             public void onResponse(Response<Status> response, Retrofit retrofit) {
                 if (response.isSuccess())
                 {
+                    session.setEmail(usuario.getEmail());
                     Intent intent = new Intent (MainActivity.this, TelaInicial.class);
                     startActivity(intent);
                 }

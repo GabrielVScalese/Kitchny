@@ -1,5 +1,6 @@
 package br.unicamp.kitchny;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
@@ -9,10 +10,13 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
+
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,10 +29,13 @@ import retrofit.Response;
 import retrofit.Retrofit;
 
 // Janela de exibição de lista de receitas
-public class TelaInicial extends AppCompatActivity {
+public class TelaInicial extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener  {
 
     private ListView listView;
     private EditText edtNomeReceita;
+    private Button btnCriarReceita;
+    private BottomNavigationView menu;
+    private Session session;
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
@@ -36,8 +43,10 @@ public class TelaInicial extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tela_inicial);
 
+        menu = (BottomNavigationView) findViewById(R.id.bottom_navigation);
         listView = findViewById(R.id.listaReceitas);
         edtNomeReceita = findViewById(R.id.edtNomeReceita);
+        btnCriarReceita = findViewById(R.id.btnCriarReceita);
         getListaReceitas();
 
         edtNomeReceita.setOnTouchListener(new View.OnTouchListener() {
@@ -77,6 +86,30 @@ public class TelaInicial extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+        btnCriarReceita.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(TelaInicial.this, TelaCriarReceita.class);
+
+                startActivity(intent);
+            }
+        });
+
+        menu.setOnNavigationItemSelectedListener(this);
+        session = new Session(TelaInicial.this);
+
+        if(session.getTela() == 1)
+        {
+            MenuItem menuItem = menu.getMenu().getItem(0);
+            menuItem.setChecked(true);
+        }
+        else
+        {
+            MenuItem menuItem = menu.getMenu().getItem(1);
+            menuItem.setChecked(true);
+        }
+
     }
 
     private void getListaReceitas()
@@ -129,5 +162,26 @@ public class TelaInicial extends AppCompatActivity {
                 Toast.makeText(TelaInicial.this, t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+
+        switch (item.getItemId()) {
+            case R.id.page_1: {
+                session.setTela(1);
+                Intent intent = new Intent(TelaInicial.this, TelaInicial.class);
+                startActivity(intent);
+                break;
+            }
+            case R.id.page_2: {
+                session.setTela(2);
+                Intent intent = new Intent(TelaInicial.this, TelaInicialUsuario.class);
+                startActivity(intent);
+                break;
+            }
+        }
+
+        return true;
     }
 }

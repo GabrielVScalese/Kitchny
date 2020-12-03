@@ -1,8 +1,10 @@
 package br.unicamp.kitchny;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.Image;
@@ -12,6 +14,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
@@ -20,6 +23,8 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -33,7 +38,7 @@ import retrofit.Callback;
 import retrofit.Response;
 import retrofit.Retrofit;
 
-public class TelaCriarReceita extends AppCompatActivity {
+public class TelaCriarReceita extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener{
 
     private ListView listViewIngrediente;
     private ListView listViewModoDePreparo;
@@ -43,18 +48,22 @@ public class TelaCriarReceita extends AppCompatActivity {
     private EditText edtEnderecoImagem;
     private Button btnSendReceita;
     private ImageView imgReceita;
+    private BottomNavigationView menu;
+    private Session session;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tela_criar_receita);
 
+        menu = (BottomNavigationView) findViewById(R.id.bottom_navigation);
         listViewIngrediente = findViewById(R.id.listaIngredientesEscolhidos);
         listViewModoDePreparo = findViewById(R.id.listaModoDePreparo);
         edtNomeReceita = findViewById(R.id.tvTituloReceitaEscolhido);
         edtEnderecoImagem = findViewById(R.id.edtEnderecoImagem);
         btnSendReceita = findViewById(R.id.btnSendReceita);
         imgReceita = findViewById(R.id.addImage);
+        session = new Session(TelaCriarReceita.this);
 
         listaIngredientes = new ArrayList<>();
         listaIngredientes.add(new Ingrediente("", ""));
@@ -66,6 +75,8 @@ public class TelaCriarReceita extends AppCompatActivity {
 
         listViewModoDePreparo.setAdapter(adapter2);
         listViewIngrediente.setAdapter(adapter);
+
+        menu.setOnNavigationItemSelectedListener(this);
 
         btnSendReceita.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -92,7 +103,6 @@ public class TelaCriarReceita extends AppCompatActivity {
                                         event.getAction() == KeyEvent.ACTION_DOWN &&
                                         event.getKeyCode() == KeyEvent.KEYCODE_ENTER) {
                             if (event == null || !event.isShiftPressed()) {
-                                Toast.makeText(TelaCriarReceita.this, "a", Toast.LENGTH_SHORT).show();
                                 DownloadImageTask dt = new DownloadImageTask();
                                 dt.execute(edtEnderecoImagem.getText().toString());
                                 return true; // consume.
@@ -102,6 +112,17 @@ public class TelaCriarReceita extends AppCompatActivity {
                     }
                 }
         );
+
+        if(session.getTela() == 1)
+        {
+            MenuItem menuItem = menu.getMenu().getItem(0);
+            menuItem.setChecked(true);
+        }
+        else
+        {
+            MenuItem menuItem = menu.getMenu().getItem(1);
+            menuItem.setChecked(true);
+        }
     }
 
     private void inserirReceita() {
@@ -183,7 +204,7 @@ public class TelaCriarReceita extends AppCompatActivity {
             } catch (Exception e) {
                 Log.e("Error", e.getMessage());
                 e.printStackTrace();
-                //Toast.makeText(TelaCriarReceita.this, "Endereço de imagem inválido!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(TelaCriarReceita.this, "Endereço de imagem inválido!", Toast.LENGTH_SHORT).show();
             }
             return mIcon11;
         }
@@ -191,5 +212,26 @@ public class TelaCriarReceita extends AppCompatActivity {
         protected void onPostExecute(Bitmap result) {
             imgReceita.setImageBitmap(Bitmap.createScaledBitmap(result, 300, 150, false));
         }
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+
+        switch (item.getItemId()) {
+            case R.id.page_1: {
+                session.setTela(1);
+                Intent intent = new Intent(TelaCriarReceita.this, TelaInicial.class);
+                startActivity(intent);
+                break;
+            }
+            case R.id.page_2: {
+                session.setTela(2);
+                Intent intent = new Intent(TelaCriarReceita.this, TelaInicialUsuario.class);
+                startActivity(intent);
+                break;
+            }
+        }
+
+        return true;
     }
 }
